@@ -1,0 +1,79 @@
+# 纯API支付
+
+## 接口信息
+
+**请求方式:** POST
+
+**请求地址:** `https://pay-gate-uat.payermax.com/aggregate-pay/api/gateway/orderAndPay`
+
+**接口说明:** 商户希望在自己的收银台上给用户展示支付方式并支付,PayerMax提供纯API(Direct API)的方式接入。对于Direct API的接口,商户如果自行处理卡号信息,需要具备PCI-DSS认证资质。
+
+## Request
+
+### Headers
+
+| 参数名 | 类型 | 必填 | 说明 | 示例值 |
+|--------|------|------|------|--------|
+| Content-Type | string | 是 | 内容类型 | application/json |
+| sign | string | 是 | 签名信息,请参考技术文档 | FPFVT3o227JrFRbqu19boZCpVVTF9KznxyRawUmxpfXilHV/0yK46haPhAjNu1hPUMy7Vw/ILXhfzffNm4Fj0apWknlTY9OJxnSoQxS9BTFtc61tn5yV1q69x/kkBl82/qwg+XTJ4fOzy7Mar3VaC1E2PlDA6RkkKBUyNE6RYgsdB+Su7an4+4HVTNAnoe74WyvBgxTLMNg28igBTdqxaO3w/UBY6ObVp7vkqkQGdL1Y+HgmMYaAVwrM3+ALWGId0sJ+YqTY4WJ+0xCRGhaSnybiIjZsQEYyID68WNUfuavDLDsEhaMm/HfQvf5p0R1Ltovp3wwJnEbQcjY458iX5A== |
+
+### Body (application/json)
+
+| 参数名 | 类型 | 必填 | 说明 | 限制 |
+|--------|------|------|------|------|
+| version | string | 是 | 接口版本,当前值为:1.4 | <= 8 characters |
+| keyVersion | string | 是 | 密钥版本,当前值为:1 | <= 8 characters |
+| requestTime | string | 是 | 请求时间,符合rfc3339规范,格式:yyyy-MM-dd'T'HH:mm:ss.SSSXXX 时间需要在当前时间两分钟内 | <= 32 characters |
+| appId | string | 是 | 商户应用Id,PayerMax分配给商户应用的唯一标识 | <= 64 characters |
+| merchantNo | string | 否 | 商户号,商户与PayerMax业务签约时生成的唯一标识 | <= 32 characters |
+| data | object | 是 | 请求数据体 | - |
+
+#### data 对象
+
+| 参数名 | 类型 | 必填 | 说明 | 限制 |
+|--------|------|------|------|------|
+| outTradeNo | string | 是 | 商户订单号,唯一标识商户的一笔交易,不能重复,只能包含字母、数字、下划线且不支持大小写敏感。如:AAA和AAa被认为是相同的 | <= 64 characters |
+| integrate | string | 是 | 商户自行进行付款方支付信息的收集后,传送给PayerMax进行交易处理,需传入参数:Direct_Payment | <= 16 characters |
+| captureMode | string | 是 | 请款模式:MANUAL | - |
+| authorizationType | string | 否 | 授权类型:FINAL_AUTH | - |
+| subject | string | 是 | 订单标题或产品信息,会展示在用户支付页面,避免使用纯数字。注:巴西钱包Pix不能超过43位 | <= 256 characters |
+| totalAmount | number | 是 | 标价金额,金额的单位为元。各个国家币种支持的小数位详见【交易支持国家/地区与币种】,风控限额详见【风控行业限额】 | - |
+| currency | string | 是 | 标价币种,大写字母,参见【交易支持国家/地区与币种】 | <= 3 characters |
+| country | string | 是 | 国家代码,大写字母,参见【交易支持国家/地区与币种】 | <= 2 characters |
+| userId | string | 是 | 商户内部的用户Id,需要保证每个ID唯一性 | <= 64 characters |
+| expireTime | string | 否 | 指定关单时间(单位:秒)。最小30分钟,最大1天。若传入则以该时间为关单时间。默认30分钟 | - |
+| paymentDetail | object | 是 | 支付信息 | - |
+| goodsDetails | array[object] | 否 | 商品信息,支持传多个。注:电商场景下需要上送。如果传入该对象,则内层必填字段必须传入 | - |
+| subMerchant | object | 否 | 二级商户信息 平台类商户需要上送子商户信息 | - |
+| shippingInfo | object | 否 | 邮寄信息。注:电商场景下需要上送。如果传入该对象,则内层必填字段必须传入 | - |
+| billingInfo | object | 否 | 信用卡账单地址信息。注:如果传入该对象,则内层必填字段必须传入 | - |
+| envInfo | object | 否 | 设备信息 | - |
+| language | string | 否 | 收银台页面语言。【支持的国家与币种】 优先级:用户上次使用的语言 > 用户浏览器语言 > 用户ip国家语言 > 商户下单传的语言 > 默认EN | <= 16 characters |
+| riskParams | object | 否 | 详见风控业务数据:【商户上送信息】,该部分信息通常作为定制风控的补充信息,如未开通定制风控可不填 | - |
+| terminalType | string | 是 | 设备终端,WEB,WAP,APP | <= 3 characters |
+| osType | string | 否 | 设备操作系统,当设备终端为Wap和App时,设备操作系统可以为ANDROID或IOS | - |
+| reference | string | 否 | 商户自定义附加数据,可支持商户自定义并在响应中返回 | <= 512 characters |
+| frontCallbackUrl | string | 否 | 商户指定的跳转URL,用户完成支付后会被跳转到该地址,以http/https开头或者商户应用的scheme地址,纯API支付下frontCallbackUrl是必填的,用于支持需要跳转外部的异步交易 | <= 1024 characters |
+| notifyUrl | string | 否 | 服务端回调通知URL,以http/https开头 可以通过MerchantDashboard平台配置商户通知地址,详情见【配置异步通知地址】,如果交易中上送,则以交易为准,即优先使用接口中传的url。注:如商户平台未配置通知地址,交易也没上送地址,则无法进行回调通知 | <= 256 characters |
+| subscriptionPlan | object | 否 | 订阅计划信息 | - |
+
+## Response
+
+### 200 成功响应
+
+#### Body (application/json)
+
+| 参数名 | 类型 | 必填 | 说明 | 限制 |
+|--------|------|------|------|------|
+| code | string | 是 | 返回码,'APPLY_SUCCESS'代表成功。只代表接口请求成功,不代表订单状态 | - |
+| msg | string | 是 | 返回描述,'Success.'。只代表接口请求成功,不代表订单状态 | - |
+| data | object | 否 | 返回数据体 | - |
+
+#### data 对象
+
+| 参数名 | 类型 | 必填 | 说明 | 限制 |
+|--------|------|------|------|------|
+| outTradeNo | string | 是 | 商户订单号 | <= 64 characters |
+| tradeToken | string | 是 | PayerMax流水号 | <= 64 characters |
+| status | string | 是 | 交易状态,详见【交易状态】 | <= 32 characters |
+| redirectUrl | string | 否 | 跳转地址 部分支付方式需要跳转外部完成支付 | <= 1024 characters |
