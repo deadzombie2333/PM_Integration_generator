@@ -1,0 +1,15 @@
+[project]
+name = "payermax-api-docs-mcp"
+version = "0.1.0"
+description = "MCP server for PayerMax API documentation"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp>=0.1.0",
+]
+
+[project.scripts]
+payermax-api-docs = "api_docs_server:mcp.run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
