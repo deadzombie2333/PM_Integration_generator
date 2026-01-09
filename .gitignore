@@ -44,3 +44,5 @@ htmlcov/
 *.bak
 test.txt
 refresh-mcp-token.sh
+mcp-credentials.json
+get-mcp-credentials.sh
