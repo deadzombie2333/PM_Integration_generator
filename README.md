@@ -85,19 +85,19 @@ Create `.kiro/settings/mcp.json`:
 
 **Example 1:**
 ```
-"I want to integrate PayerMax payment APIs"
+"I want to use payermax api power to integrate PayerMax payment APIs"
 ```
 Agent guides you through language selection, requirements analysis, and generates complete integration code.
 
 **Example 2:**
 ```
-"I need to check payment status for my orders"
+"I need use payermax api power to check payment status for my orders"
 ```
 Agent generates code with proper request signing and error handling.
 
 **Example 3:**
 ```
-"Build a complete payment system with creation, query, and refund"
+"Build a complete payment system with creation, query, and refund use payermax api power"
 ```
 Agent creates separate files for each endpoint with shared utilities.
 
