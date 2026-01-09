@@ -2,6 +2,18 @@
 
 A Kiro Power that generates production-ready PayerMax API integration code with correct payloads, request formats, and error handling.
 
+## 🎯 What is This Power?
+
+This is a **Kiro Power** - a specialized AI capability that enables intelligent code generation for PayerMax API integrations. When activated in Kiro IDE, it gives the AI agent access to official PayerMax API documentation and samples through an MCP (Model Context Protocol) server, allowing it to generate production-ready integration code with correct payloads, request formats, and error handling.
+
+### How It Works
+
+1. **You describe** what you want to build (e.g., "I need to query payment status")
+2. **The AI agent discovers** relevant PayerMax APIs from the documentation
+3. **You configure** through interactive selections (language, features, environment)
+4. **The agent generates** complete, working code based on official specifications
+5. **You get** production-ready code that you can use immediately
+
 ## 🚀 Features
 
 - **Accurate Code Generation**: Uses official PayerMax API specifications
@@ -10,12 +22,52 @@ A Kiro Power that generates production-ready PayerMax API integration code with 
 - **API Discovery**: Search and browse available PayerMax APIs
 - **Sample-Based**: Leverages real API samples for working code
 - **Type-Safe**: Generates code with proper type hints and validation
+- **Interactive Configuration**: Guided workflow with clear selection options
 
 ## 📋 Prerequisites
 
 - Python 3.10 or higher
 - Kiro IDE
 - Git (for cloning)
+- **PayerMax API Credentials** (required for MCP server authentication)
+
+## 🔐 MCP Credentials Required
+
+**IMPORTANT**: This power requires PayerMax API credentials to access the documentation server. The MCP server authenticates with PayerMax's API documentation system to retrieve official specifications and samples.
+
+### Getting Credentials
+
+**For Testing/Evaluation**:
+- Contact the PayerMax developer team to request a **temporary token**
+- Email: [developer-support@payermax.com] (replace with actual contact)
+- Specify: "Request for PayerMax API Documentation MCP Server Token"
+- Include: Your use case and expected duration
+
+**For Production Use**:
+- Contact your PayerMax account manager
+- Request API documentation access credentials
+- These are separate from your payment processing credentials
+
+### Configuring Credentials
+
+Once you receive your credentials, add them to your MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "payermax-api-docs": {
+      "command": "YOUR_ABSOLUTE_PATH/mcp-server/venv/bin/python",
+      "args": ["YOUR_ABSOLUTE_PATH/mcp-server/api_docs_server.py"],
+      "env": {
+        "PAYERMAX_API_TOKEN": "your-token-here"
+      },
+      "disabled": false
+    }
+  }
+}
+```
+
+**Note**: The current version uses local documentation files and does not require external authentication. Future versions may require API tokens for real-time documentation access.
 
 ## 🔧 Quick Start
 
