@@ -590,6 +590,7 @@ Resources:
           Value: !Sub '${VpcName}-cognito-endpoint'
 
   # OpenSearch Serverless VPC Endpoint
+  # This endpoint enables Lambda functions in private subnets to access OpenSearch Serverless
   OpenSearchServerlessEndpoint:
     Type: AWS::EC2::VPCEndpoint
     Properties:

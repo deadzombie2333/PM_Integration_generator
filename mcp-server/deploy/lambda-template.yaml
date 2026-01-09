@@ -68,10 +68,11 @@ Resources:
                 Resource: 
                   - 'arn:aws:bedrock:*::foundation-model/*'
                   - !Sub 'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/*'
+              # OpenSearch Serverless permissions for vector search
               - Effect: Allow
                 Action:
                   - aoss:APIAccessAll
-                Resource: '*'
+                Resource: !Sub 'arn:aws:aoss:${AWS::Region}:${AWS::AccountId}:collection/*'
               - Effect: Allow
                 Action:
                   - s3:GetObject

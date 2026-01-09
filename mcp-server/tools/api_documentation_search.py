@@ -36,7 +36,8 @@ class APIDocumentationSearch:
         
         # Get OpenSearch configuration from environment
         self.opensearch_endpoint = os.environ.get('OPENSEARCH_ENDPOINT')
-        self.aws_region = os.environ.get('AWS_REGION', 'us-east-1')
+        # Use REGION env var (AWS_REGION is reserved in Lambda)
+        self.aws_region = os.environ.get('REGION') or os.environ.get('AWS_REGION', 'us-west-2')
         self.index_name = os.environ.get('TOOL_3_INDEX', 'payermax-api-docs')
         
         if not self.opensearch_endpoint:
@@ -53,7 +54,13 @@ class APIDocumentationSearch:
         
         # Initialize OpenSearch client
         try:
-            credentials = boto3.Session().get_credentials()
+            # In Lambda, use default credentials (execution role)
+            # boto3.Session().get_credentials() returns frozen credentials
+            # We need to use the default credential chain which auto-refreshes
+            from botocore.session import Session
+            session = Session()
+            credentials = session.get_credentials()
+            
             auth = AWSV4SignerAuth(credentials, self.aws_region, 'aoss')
             
             self.opensearch_client = OpenSearch(

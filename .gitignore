@@ -46,3 +46,6 @@ test.txt
 refresh-mcp-token.sh
 mcp-credentials.json
 get-mcp-credentials.sh
+/mcp-server/lambda-package
+.kiro/settings/mcp.json
+.kiro/settings/mcp.json

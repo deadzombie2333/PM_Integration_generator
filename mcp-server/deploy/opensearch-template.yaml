@@ -48,6 +48,8 @@ Resources:
         }
 
   # Network Policy - VPC access only
+  # This policy restricts access to the OpenSearch collection to only come through the VPC endpoint
+  # The VPC endpoint ID is imported from the VPC stack
   NetworkPolicy:
     Type: AWS::OpenSearchServerless::SecurityPolicy
     Properties:
