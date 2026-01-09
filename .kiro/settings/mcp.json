@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "payermax-api-docs": {
+      "url": "",
+      "headers": {
+        "Authorization": ""
+      },
+      "disabled": false,
+      "autoApprove": [
+        "get_integration_recommendation",
+        "find_api_endpoint",
+        "search_integration_guides",
+        "search_api_documentation"
+      ],
+      "disabledTools": []
+    }
+  }
+}

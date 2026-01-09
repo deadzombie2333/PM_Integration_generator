@@ -1,0 +1,134 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Deploy Lambda function for PayerMax MCP Server in VPC'
+
+Parameters:
+  VpcName:
+    Type: String
+    Default: payermax-mcp
+    Description: Name prefix for VPC resources (must match VPC stack)
+    
+  GatewayName:
+    Type: String
+    Default: 'payermax-mcp-gateway'
+    Description: Gateway name (all lowercase)
+    
+  # Cognito Configuration
+  CognitoUserPoolId:
+    Type: String
+    Description: Cognito User Pool ID for authentication
+    Default: ''
+    
+  CognitoClientId:
+    Type: String
+    Description: Cognito Client ID for authentication
+    Default: ''
+  
+  # OpenSearch Configuration
+  OpenSearchEndpoint:
+    Type: String
+    Description: OpenSearch Serverless collection endpoint
+    Default: ''
+  
+  OpenSearchIndexName:
+    Type: String
+    Description: OpenSearch index name
+    Default: 'payermax-docs'
+    
+Resources:
+  # Lambda Execution Role with VPC and service permissions
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${GatewayName}-lambda-execution-role'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+      Policies:
+        - PolicyName: !Sub '${GatewayName}-lambda-policy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*'
+              - Effect: Allow
+                Action:
+                  - bedrock:InvokeModel
+                  - bedrock:InvokeModelWithResponseStream
+                Resource: 
+                  - 'arn:aws:bedrock:*::foundation-model/*'
+                  - !Sub 'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/*'
+              - Effect: Allow
+                Action:
+                  - aoss:APIAccessAll
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:ListBucket
+                Resource: '*'
+
+  # Lambda Function
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub '${GatewayName}-lambda'
+      PackageType: Zip
+      Runtime: python3.11
+      Handler: index.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 300
+      MemorySize: 2048
+      Environment:
+        Variables:
+          CUSTOM_REGION: !Ref AWS::Region
+          COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
+          COGNITO_CLIENT_ID: !Ref CognitoClientId
+          OPENSEARCH_ENDPOINT: !Ref OpenSearchEndpoint
+          OPENSEARCH_INDEX: !Ref OpenSearchIndexName
+      VpcConfig:
+        SecurityGroupIds:
+          - Fn::ImportValue: !Sub '${VpcName}-SecurityGroup-ID'
+        SubnetIds:
+          - Fn::ImportValue: !Sub '${VpcName}-PrivateSubnet1-ID'
+          - Fn::ImportValue: !Sub '${VpcName}-PrivateSubnet2-ID'
+      Code:
+        ZipFile: |
+          import json
+          def handler(event, context):
+              return {
+                  'statusCode': 200,
+                  'body': json.dumps('Placeholder - Deploy actual MCP server code')
+              }
+      Tags:
+        - Key: Name
+          Value: !Sub '${GatewayName}-lambda'
+
+Outputs:
+  LambdaFunctionArn:
+    Description: ARN of the Lambda function
+    Value: !GetAtt LambdaFunction.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-LambdaArn'
+
+  LambdaFunctionName:
+    Description: Name of the Lambda function
+    Value: !Ref LambdaFunction
+    Export:
+      Name: !Sub '${AWS::StackName}-LambdaName'
+
+  LambdaExecutionRoleArn:
+    Description: Lambda Execution Role ARN
+    Value: !GetAtt LambdaExecutionRole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-LambdaExecutionRoleArn'

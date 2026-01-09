@@ -1,0 +1,225 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'PayerMax MCP Gateway with Cognito OAuth authentication'
+
+Parameters:
+  GatewayName:
+    Type: String
+    Default: 'payermax-mcp-gateway'
+    Description: Gateway name (all lowercase)
+  
+  DomainPrefix:
+    Type: String
+    Default: 'payermax-mcp-auth'
+    Description: Domain prefix for Cognito hosted UI
+    ConstraintDescription: 'Domain prefix must be lowercase alphanumeric with hyphens allowed'
+  
+  ResourceServerIdentifier:
+    Type: String
+    Default: 'payermax-mcp'
+    Description: Resource Server Identifier for OAuth scopes
+
+Resources:
+  # Cognito User Pool
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub '${GatewayName}-user-pool'
+      AutoVerifiedAttributes:
+        - email
+      UsernameAttributes:
+        - email
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Required: true
+          Mutable: false
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+
+  # Cognito Domain
+  CognitoDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      Domain: !Ref DomainPrefix
+
+  # Resource Server for OAuth scopes
+  CognitoResourceServer:
+    Type: AWS::Cognito::UserPoolResourceServer
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      Identifier: !Ref ResourceServerIdentifier
+      Name: !Sub '${ResourceServerIdentifier}-resource-server'
+      Scopes:
+        - ScopeName: 'mcp:read'
+          ScopeDescription: 'Read access to MCP tools'
+        - ScopeName: 'mcp:write'
+          ScopeDescription: 'Write access to MCP tools'
+
+  # App Client for OAuth client credentials flow
+  MCPGatewayAppClient:
+    Type: AWS::Cognito::UserPoolClient
+    DependsOn: CognitoResourceServer
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      ClientName: !Sub '${ResourceServerIdentifier}-mcp-client'
+      GenerateSecret: true
+      ExplicitAuthFlows:
+        - ALLOW_REFRESH_TOKEN_AUTH
+      AllowedOAuthFlows:
+        - client_credentials
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthScopes:
+        - !Sub '${ResourceServerIdentifier}/mcp:read'
+        - !Sub '${ResourceServerIdentifier}/mcp:write'
+      SupportedIdentityProviders:
+        - COGNITO
+    
+  # IAM Role for AgentCore Gateway
+  AgentCoreGatewayRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${GatewayName}-role'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: bedrock-agentcore.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+      Policies:
+        - PolicyName: !Sub '${GatewayName}-policy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: BedrockModelInvocation
+                Effect: Allow
+                Action:
+                  - bedrock:InvokeModel
+                  - bedrock:InvokeModelWithResponseStream
+                  - bedrock:ApplyGuardrail
+                  - bedrock:Retrieve
+                Resource:
+                  - 'arn:aws:bedrock:*::foundation-model/*'
+                  - !Sub 'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:*'
+              - Sid: BedrockAgentCoreFullAccess
+                Effect: Allow
+                Action:
+                  - bedrock-agentcore:*
+                Resource: 'arn:aws:bedrock-agentcore:*:*:*'
+              - Sid: GetSecretValue
+                Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource: '*'
+
+  # AgentCore Gateway
+  AgentCoreGateway:
+    Type: AWS::BedrockAgentCore::Gateway
+    DependsOn: 
+      - MCPGatewayAppClient
+      - CognitoDomain
+    Properties:
+      Name: !Ref GatewayName
+      RoleArn: !GetAtt AgentCoreGatewayRole.Arn
+      ProtocolType: MCP
+      AuthorizerType: CUSTOM_JWT
+      AuthorizerConfiguration:
+        CustomJWTAuthorizer:
+          DiscoveryUrl: !Sub 'https://cognito-idp.${AWS::Region}.amazonaws.com/${CognitoUserPool}/.well-known/openid-configuration'
+          AllowedClients:
+            - !Ref MCPGatewayAppClient
+      ExceptionLevel: DEBUG
+      ProtocolConfiguration:
+        Mcp:
+          SearchType: SEMANTIC
+
+Outputs:
+  AgentCoreGatewayId:
+    Description: AgentCore Gateway ID
+    Value: !Ref AgentCoreGateway
+    Export:
+      Name: !Sub '${AWS::StackName}-GatewayId'
+
+  AgentCoreGatewayUrl:
+    Description: AgentCore Gateway URL
+    Value: !GetAtt AgentCoreGateway.GatewayUrl
+    Export:
+      Name: !Sub '${AWS::StackName}-GatewayUrl'
+
+  AgentCoreRoleArn:
+    Description: IAM Role ARN for AgentCore Gateway
+    Value: !GetAtt AgentCoreGatewayRole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-AgentCoreRoleArn'
+
+  CognitoUserPoolId:
+    Description: Cognito User Pool ID
+    Value: !Ref CognitoUserPool
+    Export:
+      Name: !Sub '${AWS::StackName}-UserPoolId'
+
+  CognitoDomainName:
+    Description: Cognito Domain Name
+    Value: !Ref CognitoDomain
+    Export:
+      Name: !Sub '${AWS::StackName}-CognitoDomainName'
+  
+  TokenEndpoint:
+    Description: OAuth2 Token Endpoint URL
+    Value: !Sub 'https://${DomainPrefix}.auth.${AWS::Region}.amazoncognito.com/oauth2/token'
+    Export:
+      Name: !Sub '${AWS::StackName}-TokenEndpoint'
+  
+  AuthorizeEndpoint:
+    Description: OAuth2 Authorization Endpoint URL
+    Value: !Sub 'https://${DomainPrefix}.auth.${AWS::Region}.amazoncognito.com/oauth2/authorize'
+    Export:
+      Name: !Sub '${AWS::StackName}-AuthorizeEndpoint'
+  
+  CognitoHostedUIURL:
+    Description: Cognito Hosted UI Base URL
+    Value: !Sub 'https://${DomainPrefix}.auth.${AWS::Region}.amazoncognito.com'
+    Export:
+      Name: !Sub '${AWS::StackName}-CognitoHostedUIURL'
+
+  ClientId:
+    Description: App Client ID configured for client credentials flow
+    Value: !Ref MCPGatewayAppClient
+    Export:
+      Name: !Sub '${AWS::StackName}-ClientId'
+  
+  RequiredScopes:
+    Description: OAuth2 Scopes available for authentication
+    Value: !Sub '${ResourceServerIdentifier}/mcp:read ${ResourceServerIdentifier}/mcp:write'
+    Export:
+      Name: !Sub '${AWS::StackName}-RequiredScopes'
+
+  ResourceServerIdentifier:
+    Description: Resource Server Identifier
+    Value: !Ref CognitoResourceServer
+    Export:
+      Name: !Sub '${AWS::StackName}-ResourceServerIdentifier'
+
+  DiscoveryUrl:
+    Description: Cognito Discovery URL
+    Value: !Sub 'https://cognito-idp.${AWS::Region}.amazonaws.com/${CognitoUserPool}/.well-known/openid-configuration'
+    Export:
+      Name: !Sub '${AWS::StackName}-DiscoveryUrl'
+
+  JwtIssuer:
+    Description: JWT Issuer URL
+    Value: !Sub 'https://cognito-idp.${AWS::Region}.amazonaws.com/${CognitoUserPool}'
+    Export:
+      Name: !Sub '${AWS::StackName}-JwtIssuer'

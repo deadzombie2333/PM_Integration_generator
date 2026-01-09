@@ -1,0 +1,25 @@
+{
+    "region": "us-west-2",
+    "lambda_stack_name": "payermax-mcp-lambda-stack",
+    "gateway_stack_name": "payermax-mcp-gateway-stack",
+    "target_stack_name": "payermax-mcp-target-stack",
+    "gateway_name": "payermax-mcp-gateway",
+    "client_id": "64jcu02ght46l23n7l7mpoc19f",
+    "pool_id": "us-west-2_KJN7RUJ5o",
+    "client_secret": "1d7kd1slp9mailvdaehkitcl7b45k64q3761emem6fk7qugoi5mj",
+    "token_endpoint": "https://payermax-mcp-auth.auth.us-west-2.amazoncognito.com/oauth2/token",
+    "discovery_url": "https://cognito-idp.us-west-2.amazonaws.com/us-west-2_KJN7RUJ5o/.well-known/openid-configuration",
+    "jwt_issuer": "https://cognito-idp.us-west-2.amazonaws.com/us-west-2_KJN7RUJ5o",
+    "scopes": "payermax-mcp/mcp:read payermax-mcp/mcp:write",
+    "lambda_function_arn": "arn:aws:lambda:us-west-2:183017937161:function:payermax-mcp-gateway-lambda",
+    "execution_role_arn": "arn:aws:iam::183017937161:role/payermax-mcp-gateway-lambda-execution-role",
+    "gateway_id": "payermax-mcp-gateway-l5md7vkt6g",
+    "gateway_url": "https://payermax-mcp-gateway-l5md7vkt6g.gateway.bedrock-agentcore.us-west-2.amazonaws.com/mcp",
+    "gateway_target_id": "payermax-mcp-gateway-l5md7vkt6g|1EJHYLRENK",
+    "authorizer_config": {
+        "jwtConfiguration": {
+            "issuer": "https://cognito-idp.us-west-2.amazonaws.com/us-west-2_KJN7RUJ5o",
+            "audience": ["64jcu02ght46l23n7l7mpoc19f"]
+        }
+    }
+}

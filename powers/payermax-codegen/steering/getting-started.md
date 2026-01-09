@@ -1,592 +1,607 @@
-# Getting Started with PayerMax API Code Generator
+# PayerMax API Code Generator - Workflow Guide
 
-This guide walks you through generating PayerMax API integration code.
+## ⚠️ CRITICAL: READ THIS ENTIRE FILE BEFORE ANY ACTION ⚠️
 
-## Interactive Code Generation
+## MANDATORY WORKFLOW - ZERO TOLERANCE FOR SKIPPING
 
-This power uses an **interactive three-step approach** to gather requirements before generating code:
+**Agent MUST follow these 6 steps in EXACT order. Skipping ANY step = FAILURE.**
 
-**Step 1: Select Interaction Language (FIRST - REQUIRED)**
-- Agent **MUST FIRST** ask: "Which language would you like to use for our conversation?"
-- Options: **Chinese (中文)** or **English**
-- This sets the language for ALL subsequent interactions
-- All tool descriptions, questions, and responses will use the selected language
-
-**Step 2: Describe Use Case (SECOND - REQUIRED)**
-- After language selection, agent asks (in selected language): "Please briefly describe what you want to build with PayerMax APIs"
-- User provides context about their integration needs
-- Agent identifies relevant APIs based on description
-
-**Step 3: Gather Configuration (THIRD - AFTER USE CASE)**
-- Agent then presents clear selection options in Kiro's interface (in selected language) for:
-  - Programming language (Python, Node.js, Java, etc.)
-  - Code structure and style
-  - Credential handling
-  - Features to include
-  - Target environment
-  - Custom requirements
-
-This ensures the generated code matches your exact needs and the interaction is in your preferred language.
-
-## Quick Start
-
-### Step 1: Select Interaction Language
-
-When user starts, agent **MUST FIRST** ask:
-
-```
-Agent: "Which language would you like to use for our conversation?"
-Options:
-- Chinese (中文)
-- English
-```
-
-**User selects**: Chinese or English
-
-**Agent should**:
-1. Remember the selected language
-2. Use ONLY that language for all subsequent interactions
-3. Proceed to Step 2
-
-### Step 2: Request Code Generation
-
-Start by telling the agent you want to integrate PayerMax (agent will respond in your selected language):
-
-```
-User: "I want to integrate PayerMax APIs"
-```
-
-**Agent should** (in selected language):
-1. Ask: "Please briefly describe what you want to build with PayerMax APIs"
-   - If Chinese selected: "请简要描述您想用 PayerMax API 构建什么功能"
-   - If English selected: "Please briefly describe what you want to build with PayerMax APIs"
-
-### Step 3: Describe Your Use Case
-
-Provide a brief description:
-
-```
-User: "I need to query payment status for my e-commerce orders"
-```
-
-**Agent should**:
-1. Identify relevant APIs based on description
-2. Call `search_apis("查询")` or `search_apis("query")` or browse categories
-3. Determine the best API match (e.g., "付款查询")
-
-### Step 4: Configure Code Generation
-
-**Agent workflow**:
-
-1. **Select Language** (FIRST - REQUIRED)
-   
-   Agent asks: **"Which language would you like to use for our conversation? / 您希望使用哪种语言进行交流？"**
-   
-   Options: Chinese (中文) / English
-
-2. **Gather Use Case** (SECOND - REQUIRED)
-   
-   Agent asks (in selected language): **"Please briefly describe what you want to build with PayerMax APIs"**
-   
-   User provides context about their needs.
-
-3. **Interactive Configuration** (THIRD - AFTER USE CASE)
-   
-   **IMPORTANT**: Before asking any question, check if the user already provided that information in Step 2. If they did, skip that question and use their provided value.
-   
-   Agent asks questions **ONE AT A TIME**, waiting for user response before proceeding:
-   
-   **Question 1: Programming Language**
-   
-   Agent asks (in selected language): "Which programming language would you like to use?"
-   
-   **SKIP IF**: User mentioned language in Step 2 (e.g., "I need Python code...")
-   
-   Options:
-   1. Python
-   2. Node.js (JavaScript)
-   3. Java
-   4. PHP
-   5. Go
-   6. Ruby
-   7. C#
-   8. Shell (curl)
-   
-   User enters: **1-8**
-   
-   **Wait for user selection, then proceed to Question 2**
-   
-   ---
-   
-   **Question 2: Code Structure**
-   
-   Agent asks: "What code structure do you prefer?"
-   
-   **SKIP IF**: User specified structure in Step 2 (e.g., "a class-based client...")
-   
-   Options:
-   1. Class-based API client (recommended)
-   2. Standalone function
-   3. Complete module with utilities
-   4. Code snippet only
-   
-   User enters: **1-4**
-   
-   **Wait for user selection, then proceed to Question 3**
-   
-   ---
-   
-   **Question 3: Credential Handling**
-   
-   Agent asks: "How should API credentials be handled?"
-   
-   **SKIP IF**: User mentioned credentials in Step 2 (e.g., "use environment variables...")
-   
-   Options:
-   1. Use placeholders (recommended for sharing)
-   2. I'll provide actual credentials
-   3. Use environment variables
-   
-   User enters: **1-3**
-   
-   **Wait for user selection, then proceed to Question 4**
-   
-   ---
-   
-   **Question 4: Features to Include**
-   
-   Agent asks: "Which features would you like to include? (You can select multiple, e.g., 1,2,4)"
-   
-   **SKIP IF**: User specified features in Step 2 (e.g., "with error handling and logging...")
-   
-   Options (multi-select):
-   1. Error handling and retry logic
-   2. Request/response logging
-   3. Parameter validation
-   4. Type hints/annotations
-   5. Usage examples in comments
-   6. Unit test template
-   
-   User enters: **1-6 (comma-separated for multiple, e.g., "1,2,3")**
-   
-   **Wait for user selection, then proceed to Question 5**
-   
-   ---
-   
-   **Question 5: Target Environment**
-   
-   Agent asks: "Which environment will you use?"
-   
-   **SKIP IF**: User mentioned environment in Step 2 (e.g., "for production..." or "for testing...")
-   
-   Options:
-   1. UAT (testing) - recommended for development
-   2. Production
-   
-   User enters: **1-2**
-   
-   **Wait for user selection, then proceed to Question 6**
-   
-   ---
-   
-   **Question 6: Custom Requirements (Optional)**
-   
-   Agent asks: "Do you have any special requirements? (Enter text or 'no' to skip)"
-   
-   **SKIP IF**: User already provided special requirements in Step 2
-   
-   Examples:
-   - Specific payment methods
-   - Regional configurations (e.g., Brazil market)
-   - Custom error handling
-   
-   User enters: **Text description or "no"**
-   
-   **Wait for user response, then proceed to Step 4**
+**BEFORE YOU DO ANYTHING ELSE, UNDERSTAND THIS:**
+- You are currently at STEP 1
+- You CANNOT skip to any other step
+- You MUST ask the language question FIRST
+- Even if the user already provided requirements, you MUST start at STEP 1
+- **ALWAYS use vibe session mode for this power - DO NOT ask about session type**
+- **After language selection, use ONLY that language for ALL messages - NO MIXING**
 
 ---
 
-### Step 4: Collect Required API Parameters
+## STEP 1: Select Language
 
-**After configuration is complete, agent must**:
+**🚨 THIS IS YOUR CURRENT STEP - YOU ARE HERE NOW 🚨**
 
-1. **Retrieve API Documentation**
-   ```
-   Call: get_api_documentation(category, api_name)
-   ```
+**THIS STEP IS MANDATORY - ALWAYS START HERE - NO EXCEPTIONS**
 
-2. **Parse Required Parameters**
-   - Identify all fields marked as "必填" (Required) or "Y" in the required column
-   - Note parameter constraints (max length, format, allowed values)
-   - Skip system parameters (appId, merchantNo, requestTime, version, keyVersion)
+**YOUR FIRST AND ONLY ACTION RIGHT NOW:**
 
-3. **Check Step 2 Use Case Description**
-   - Review user's use case description from Step 2
-   - Identify if user already provided values for any required parameters
-   - Extract those values
+**Agent asks (EXACT WORDING):**
+```
+Which language would you like to use for our conversation?
+1) English
+2) Chinese (中文)
+```
 
-4. **Ask for Each Required Parameter ONE AT A TIME** (in selected language)
-   
-   **SKIP IF**: User already provided this parameter value in Step 2
-   
-   For each required parameter not yet provided:
-   ```
-   Agent: "Please provide value for '[parameter_name]'"
-   Agent: "Description: [parameter description from API spec]"
-   Agent: "Constraints: [max length / format / allowed values]"
-   
-   User: [enters value]
-   
-   Agent validates and proceeds to next parameter
-   ```
+**Agent waits for:** User selection (1 or 2)
 
-5. **Example Parameter Collection**:
-   ```
-   # If user said in Step 2: "I need to query order ORDER_20240107_001"
-   # Agent extracts: outTradeNo = "ORDER_20240107_001"
-   # Agent SKIPS asking for outTradeNo
-   
-   # Agent only asks for remaining required parameters:
-   Agent: "Please provide value for 'amount'"
-   Agent: "Description: Payment amount"
-   Agent: "Constraints: Decimal, e.g., 100.50"
-   User: "99.99"
-   ```
+**Agent then:** 
+- If user selects "1" or "English": Use ONLY English for ALL subsequent messages, questions, and responses
+- If user selects "2" or "Chinese" or "中文": Use ONLY Chinese (中文) for ALL subsequent messages, questions, and responses
 
-6. **Validate Each Input**
-   - Check length constraints
-   - Verify format requirements
-   - Confirm required fields are not empty
+**🚨 CRITICAL LANGUAGE RULE:**
+- Once language is selected, NEVER mix languages in the same message
+- ALL text must be in the selected language (questions, explanations, confirmations)
+- Only exception: code comments can be in English if that's the coding standard
+- **ALWAYS use vibe session mode - DO NOT ask about session type**
 
-**CRITICAL**: Always review Step 2 first. Do NOT ask for information user already provided.
+**⛔ STOP SIGNS:**
+- ⛔ DO NOT skip this step even if user already spoke English or Chinese
+- ⛔ DO NOT ask about session type (always use vibe session)
+- ⛔ DO NOT ask about requirements yet
+- ⛔ DO NOT create any integration plan yet
+- ⛔ DO NOT call any MCP tools yet
+- ⛔ DO NOT generate any code
+- ⛔ DO NOT ask multiple questions at once
+- ⛔ DO NOT mix languages after selection
+
+**✅ ONLY CORRECT ACTION:** Ask the language question above, then WAIT
+
+**Accept answers:** "1", "2", "English", "Chinese", "中文", or similar
+
+**NEXT: After user answers, GO TO STEP 2 (not before)**
 
 ---
 
-### Step 5: Generate and Review Code
+## STEP 2: Describe Requirements
 
-**After all parameters are collected, agent must**:
+**🚨 YOU ARE NOW AT STEP 2 (only after completing Step 1) 🚨**
 
-1. **Generate Initial Code**
-   - Use all collected configuration settings
-   - Include all user-provided parameter values
-   - Apply selected features (error handling, logging, etc.)
-   - Use correct endpoint URL based on environment
+**BEFORE PROCEEDING:**
+- ✅ Did you ask the language question in Step 1? 
+- ✅ Did you receive the user's language choice?
+- ❌ If NO to either, GO BACK TO STEP 1
 
-2. **Self-Review Code (CRITICAL - MANDATORY)**
-   
-   Agent must review the generated code for:
-   - ✓ Syntax errors (brackets, semicolons, indentation)
-   - ✓ All required parameters are included
-   - ✓ Parameter values are correctly placed
-   - ✓ Signature generation logic is correct
-   - ✓ Endpoint URL matches selected environment
-   - ✓ Error handling is complete
-   - ✓ Import statements are correct
-   - ✓ Variable names are consistent
-   - ✓ Code follows language best practices
-   - ✓ Code can run immediately without modifications
+**Agent asks (in selected language - use ONLY the selected language):**
 
-3. **Fix Any Issues**
-   - If errors found, correct them immediately
-   - Re-review after fixes
-
-4. **Deliver Production-Ready Code**
-   - Present the final, reviewed code
-   - Include brief usage instructions
-   - Mention any setup requirements (install dependencies, etc.)
-
-**CRITICAL**: The delivered code MUST be production-ready and runnable as-is. Always perform thorough self-review before delivery.
-
-2. **Retrieve Documentation**
-   ```
-   Call: get_api_documentation("付款", "付款查询")
-   ```
-
-3. **Parse Specification**
-   - Extract endpoint URL
-   - Identify required headers
-   - List all request parameters
-   - Note parameter constraints (max length, required/optional)
-   - Understand response structure
-
-4. **Generate Code Structure** (based on user selections)
-   ```python
-   import requests
-   import json
-   from datetime import datetime
-   
-   class PayerMaxClient:
-       def __init__(self, app_id, merchant_no, private_key):
-           self.app_id = app_id
-           self.merchant_no = merchant_no
-           self.private_key = private_key
-           self.base_url = "https://pay-gate-uat.payermax.com"
-       
-       def generate_signature(self, payload):
-           # TODO: Implement signature generation
-           pass
-       
-       def payment_order_query(self, out_trade_no):
-           # Implementation based on API spec
-           pass
-   ```
-
-5. **Add Request Logic**
-   - Build request payload with all required fields
-   - Add parameter validation (if selected)
-   - Generate signature
-   - Make HTTP request
-   - Handle response
-
-6. **Include Error Handling** (if selected)
-   ```python
-   try:
-       response = requests.post(url, json=payload, headers=headers)
-       response.raise_for_status()
-       result = response.json()
-       
-       if result.get('code') == 'APPLY_SUCCESS':
-           return result['data']
-       else:
-           raise Exception(f"API Error: {result.get('msg')}")
-   except requests.exceptions.RequestException as e:
-       # Handle network errors
-       pass
-   ```
-
-7. **Add Documentation**
-   - Document each parameter from API spec
-   - Add usage examples (if selected)
-   - Include response field descriptions
-
-## Language-Specific Templates
-
-### Python Template
-
-```python
-import requests
-import json
-from datetime import datetime, timezone
-
-class PayerMaxClient:
-    """PayerMax API Client"""
-    
-    def __init__(self, app_id: str, merchant_no: str, private_key: str):
-        self.app_id = app_id
-        self.merchant_no = merchant_no
-        self.private_key = private_key
-        self.base_url = "https://pay-gate-uat.payermax.com"
-        self.version = "1.4"
-        self.key_version = "1"
-    
-    def _generate_signature(self, payload: dict) -> str:
-        """Generate request signature"""
-        # Implement RSA signature generation
-        # See PayerMax technical documentation
-        pass
-    
-    def _make_request(self, endpoint: str, data: dict) -> dict:
-        """Make API request with signature"""
-        request_time = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + '+00:00'
-        
-        payload = {
-            "version": self.version,
-            "keyVersion": self.key_version,
-            "requestTime": request_time,
-            "appId": self.app_id,
-            "merchantNo": self.merchant_no,
-            "data": data
-        }
-        
-        signature = self._generate_signature(payload)
-        headers = {
-            "Content-Type": "application/json",
-            "sign": signature
-        }
-        
-        url = f"{self.base_url}{endpoint}"
-        response = requests.post(url, json=payload, headers=headers)
-        response.raise_for_status()
-        
-        return response.json()
+**If English was selected:**
+```
+Please describe what you want to build with PayerMax APIs
 ```
 
-### Node.js Template
-
-```javascript
-const axios = require('axios');
-
-class PayerMaxClient {
-  constructor(appId, merchantNo, privateKey) {
-    this.appId = appId;
-    this.merchantNo = merchantNo;
-    this.privateKey = privateKey;
-    this.baseUrl = 'https://pay-gate-uat.payermax.com';
-    this.version = '1.4';
-    this.keyVersion = '1';
-  }
-
-  generateSignature(payload) {
-    // Implement RSA signature generation
-    // See PayerMax technical documentation
-  }
-
-  async makeRequest(endpoint, data) {
-    const requestTime = new Date().toISOString();
-    
-    const payload = {
-      version: this.version,
-      keyVersion: this.keyVersion,
-      requestTime: requestTime,
-      appId: this.appId,
-      merchantNo: this.merchantNo,
-      data: data
-    };
-
-    const signature = this.generateSignature(payload);
-    
-    const response = await axios.post(
-      `${this.baseUrl}${endpoint}`,
-      payload,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'sign': signature
-        }
-      }
-    );
-
-    return response.data;
-  }
-}
+**If Chinese was selected:**
+```
+请描述您想使用 PayerMax API 构建什么功能
 ```
 
-## Common Patterns
+**Examples:**
+- English: "I need card payment and refund for my e-commerce site"
+- Chinese: "我需要为我的电商平台集成卡支付和退款功能"
 
-### Pattern 1: Single API Method
+**Agent waits for:** User description
 
-For generating a single API method:
+**Agent then:**
+1. Calls `get_integration_recommendation(user_description)`
+2. Calls `find_api_endpoint()` for each required task
+3. Calls `search_integration_guides()` for additional context
 
-1. Get full documentation: `get_api_documentation(category, api_name)`
-2. Extract endpoint, method, parameters
-3. Generate method with proper typing
-4. Add parameter validation
-5. Include error handling
-6. Add docstring with parameter descriptions
+**⛔ STOP SIGNS:**
+- ⛔ DO NOT create integration plan yet
+- ⛔ DO NOT ask information questions yet
+- ⛔ DO NOT generate any code
 
-### Pattern 2: Complete API Client
+**✅ ONLY CORRECT ACTION:** Collect user requirements, call MCP tools, then GO TO STEP 3
 
-For generating a full client library:
+**NEXT: After gathering all API information, GO TO STEP 3 (not before)**
 
-1. List all APIs in category: `list_apis_in_category(category)`
-2. For each API, get documentation
-3. Create client class with shared configuration
-4. Generate method for each API
-5. Add common utilities (signature, error handling)
-6. Create comprehensive documentation
+---
 
-### Pattern 3: Quick Test Script
+## STEP 3: Create Integration Plan
 
-For generating a test script:
+**🚨 YOU ARE NOW AT STEP 3 (only after completing Steps 1-2) 🚨**
 
-1. Get API sample: `get_api_sample(category, api_name)`
-2. Extract sample request
-3. Convert to executable script
-4. Add placeholders for credentials
-5. Include response validation
+**BEFORE PROCEEDING:**
+- ✅ Did you complete Step 1 (language selection)?
+- ✅ Did you complete Step 2 (requirements + MCP tool calls)?
+- ❌ If NO to either, GO BACK and complete missing steps
 
-## Best Practices
+**Agent creates** `integration-plan.md` with ONLY:
 
-### 1. Always Validate Parameters
+```markdown
+# PayerMax Integration Plan
 
-```python
-def payment_order_query(self, out_trade_no: str):
-    # Validate based on API spec constraints
-    if not out_trade_no:
-        raise ValueError("out_trade_no is required")
-    if len(out_trade_no) > 63:
-        raise ValueError("out_trade_no must be <= 63 characters")
-    
-    # Make request
-    ...
+## PayerMax Product
+[Cashier Mode / Pure API / Drop-in Component / Payment Link]
+
+## Payment Type
+[Card / Wallet / Bank Transfer / Multiple]
+
+## API Endpoints Required
+
+┌─────────────────────────────────────────────────────────────┐
+│ API ENDPOINTS FOR THIS INTEGRATION                          │
+├─────────────────────────────────────────────────────────────┤
+│ 1. [Endpoint Name] ([HTTP Method] [Path])                  │
+│    File: [filename.py]                                      │
+│                                                              │
+│ 2. [Next Endpoint]...                                       │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### 2. Use Type Hints (Python) or TypeScript
+**Agent presents (in selected language):**
 
-```python
-from typing import Dict, Optional
+**If English:**
+```
+I've created an integration plan in integration-plan.md
+PayerMax Product: [product]
+Payment Type: [type]
+[X] API endpoints listed
 
-def payment_order_query(self, out_trade_no: str) -> Dict[str, any]:
-    """
-    Query payment order status
-    
-    Args:
-        out_trade_no: Original merchant order number (max 63 chars)
-    
-    Returns:
-        Dict containing order status and details
-    
-    Raises:
-        ValueError: If parameters are invalid
-        requests.HTTPError: If API request fails
-    """
+Please review the plan. Reply with:
+1) Approve - proceed to next step
+2) Request changes - I'll update the plan
 ```
 
-### 3. Include Usage Examples
+**If Chinese:**
+```
+我已在 integration-plan.md 中创建了集成计划
+PayerMax 产品：[product]
+支付类型：[type]
+共 [X] 个 API 端点
 
-```python
-# Usage Example:
-# 
-# client = PayerMaxClient(
-#     app_id="your_app_id",
-#     merchant_no="your_merchant_no",
-#     private_key="your_private_key"
-# )
-# 
-# result = client.payment_order_query("order_123456")
-# print(f"Order status: {result['status']}")
+请审阅计划。请回复：
+1) 批准 - 继续下一步
+2) 请求修改 - 我将更新计划
 ```
 
-### 4. Handle All Response Codes
+**Agent waits for:** User selection (1 or 2, or text like "looks good", "proceed", "change X", etc.)
 
-```python
-result = response.json()
+**If user requests changes:** Update plan and present again
 
-if result['code'] == 'APPLY_SUCCESS':
-    # Success - but check order status
-    if result['data']['status'] == 'SUCCESS':
-        return result['data']
-    elif result['data']['status'] == 'FAILED':
-        raise PaymentFailedError(result['data'].get('responseMsg'))
-    elif result['data']['status'] == 'PENDING':
-        return result['data']  # Still processing
-elif result['code'] == 'ORDER_NOT_EXIST':
-    raise OrderNotFoundError("Order does not exist")
-else:
-    raise APIError(f"API Error: {result['msg']}")
+**⛔ CRITICAL STOP SIGNS - READ CAREFULLY:**
+- ⛔ DO NOT proceed to Step 4 until user approves the plan
+- ⛔ DO NOT generate ANY code files
+- ⛔ DO NOT call fsWrite for code files
+- ⛔ DO NOT ask information questions yet
+- ⛔ DO NOT skip to Step 6
+- ⛔ DO NOT assume user approval
+
+**🛑 MANDATORY PAUSE POINT 🛑**
+**YOU MUST STOP HERE AND WAIT FOR USER TO APPROVE THE PLAN**
+
+**✅ ONLY CORRECT NEXT ACTION:** 
+After user approves, your NEXT message should ask Question 1 from Step 4:
+"Which programming language? 1) Python 2) Node.js 3) Java..."
+
+**NEXT: After user approves plan, GO TO STEP 4 and ask Question 1**
+
+---
+
+## STEP 4: Collect Information
+
+**🚨 YOU ARE NOW AT STEP 4 (only after user approved plan in Step 3) 🚨**
+
+**BEFORE PROCEEDING:**
+- ✅ Did you complete Steps 1, 2, and 3?
+- ✅ Did user approve the integration plan?
+- ❌ If NO to either, GO BACK and complete missing steps
+
+**Agent says (in selected language):**
+
+**If English:**
 ```
+Great! Now I need to collect some information to generate the code.
+```
+
+**If Chinese:**
+```
+太好了！现在我需要收集一些信息来生成代码。
+```
+
+**Then immediately ask Question 1 below (in selected language):**
+
+**🚨 CRITICAL: ASK ONE QUESTION AT A TIME - WAIT FOR ANSWER BEFORE NEXT QUESTION 🚨**
+
+**Agent asks these questions ONE AT A TIME:**
+
+### Question 1: Programming Language
+
+**If English:**
+```
+Which programming language?
+1) Python
+2) Node.js
+3) Java
+4) PHP
+5) Go
+6) Ruby
+7) C#
+8) Shell
+```
+
+**If Chinese:**
+```
+选择哪种编程语言？
+1) Python
+2) Node.js
+3) Java
+4) PHP
+5) Go
+6) Ruby
+7) C#
+8) Shell
+```
+
+**⏸️ STOP AND WAIT for:** User answer (1-8)
+**❌ DO NOT ask Question 2 until user answers Question 1**
+
+### Question 2: Code Structure
+
+**If English:**
+```
+What code structure do you prefer?
+1) Class-based client
+2) Standalone function
+3) Complete module
+4) Code snippet only
+```
+
+**If Chinese:**
+```
+您希望使用什么代码结构？
+1) 基于类的客户端
+2) 独立函数
+3) 完整模块
+4) 仅代码片段
+```
+
+**⏸️ STOP AND WAIT for:** User answer (1-4)
+**❌ DO NOT ask Question 3 until user answers Question 2**
+
+### Question 3: Credential Handling
+
+**If English:**
+```
+How should API credentials be handled?
+1) Use placeholders
+2) Provide actual credentials
+3) Use environment variables
+```
+
+**If Chinese:**
+```
+API 凭证应该如何处理？
+1) 使用占位符
+2) 提供实际凭证
+3) 使用环境变量
+```
+
+**⏸️ STOP AND WAIT for:** User answer (1-3)
+**❌ DO NOT ask Question 4 until user answers Question 3**
+
+### Question 4: Features
+
+**If English:**
+```
+Which features? (comma-separated, e.g., 1,2,4)
+1) Error handling
+2) Logging
+3) Validation
+4) Type hints
+5) Examples
+6) Unit tests
+```
+
+**If Chinese:**
+```
+需要哪些功能？（用逗号分隔，例如：1,2,4）
+1) 错误处理
+2) 日志记录
+3) 验证
+4) 类型提示
+5) 示例
+6) 单元测试
+```
+
+**⏸️ STOP AND WAIT for:** User answer (1-6, comma-separated)
+**❌ DO NOT ask Question 5 until user answers Question 4**
+
+### Question 5: Environment
+```
+Which environment?
+1) UAT (testing)
+2) Production
+```
+**⏸️ STOP AND WAIT for:** User answer (1-2)
+**❌ DO NOT ask Question 6 until user answers Question 5**
+
+### Question 6: Custom Requirements
+```
+Any special requirements?
+1) No special requirements
+2) Yes - I'll describe them
+```
+**⏸️ STOP AND WAIT for:** User answer (1 or 2, or direct text description)
+
+**⛔ CRITICAL STOP SIGNS:**
+- ⛔ DO NOT ask multiple questions at once
+- ⛔ DO NOT skip any of the 6 questions
+- ⛔ DO NOT generate code yet
+- ⛔ DO NOT proceed to Step 6 yet
+
+**🛑 MANDATORY: ALL 6 QUESTIONS MUST BE ASKED AND ANSWERED 🛑**
+
+**✅ ONLY CORRECT NEXT ACTION:**
+After collecting ALL 6 answers, GO TO STEP 5 and ask for confirmation
+
+**NEXT: After collecting all 6 answers, GO TO STEP 5**
+
+---
+
+## STEP 5: Confirm Code Generation
+
+**🚨 YOU ARE NOW AT STEP 5 (only after collecting all 6 answers in Step 4) 🚨**
+
+**BEFORE PROCEEDING:**
+- ✅ Did you ask ALL 6 questions in Step 4?
+- ✅ Did you receive answers to ALL 6 questions?
+- ❌ If NO to either, GO BACK TO STEP 4
+
+**Agent says:**
+```
+All information collected!
+I'll now generate code based on the approved integration plan.
+This will create [X] files (one for each endpoint).
+
+Ready to generate the code?
+1) Yes - start generating code
+2) No - I need to make changes
+```
+
+**Agent waits for:** User selection (1 or 2, or text like "yes", "start", "go ahead", etc.)
+
+**⛔ CRITICAL STOP SIGNS:**
+- ⛔ DO NOT generate code until user confirms with "yes"
+- ⛔ DO NOT call fsWrite yet
+- ⛔ DO NOT skip this confirmation step
+- ⛔ DO NOT assume user wants to proceed
+
+**🛑 MANDATORY PAUSE POINT - WAIT FOR USER TO SAY "YES" 🛑**
+
+**✅ ONLY CORRECT NEXT ACTION:**
+After user says "yes", GO TO STEP 6 and generate code files
+
+**NEXT: After user confirms "yes", GO TO STEP 6**
+
+---
+
+## STEP 6: Generate Code
+
+**🚨 YOU ARE NOW AT STEP 6 - FINALLY YOU CAN GENERATE CODE 🚨**
+
+**BEFORE PROCEEDING:**
+- ✅ Did you complete Steps 1-5?
+- ✅ Did user say "yes" in Step 5?
+- ❌ If NO to either, GO BACK and complete missing steps
+
+**✅ YOU ARE NOW AUTHORIZED TO GENERATE CODE**
+
+**Agent does:**
+
+1. **Read** `integration-plan.md` (including any user modifications)
+
+2. **Generate files** matching the plan:
+   - One file per API endpoint
+   - Configuration file
+   - Main integration module
+   - Frontend file (for Cashier/Drop-in modes)
+   - Backend API file (for Cashier/Drop-in modes)
+   - README with usage instructions
+
+3. **Self-review** each file:
+   - Check syntax
+   - Verify all parameters included
+   - Ensure signature generation correct
+   - Validate endpoint URLs
+   - Confirm error handling complete
+
+4. **Deliver** production-ready code
+
+**CONGRATULATIONS: You have successfully completed the workflow!**
+
+---
+
+## CRITICAL RULES
+
+### ❌ NEVER (THESE ACTIONS WILL CAUSE FAILURE):
+- ❌ Generate code before creating plan
+- ❌ Generate code before user approves plan  
+- ❌ Generate code before collecting ALL 6 information answers
+- ❌ Generate code before user says "yes" in Step 5
+- ❌ Skip Step 1 (language selection) - THIS IS ALWAYS FIRST
+- ❌ Skip Step 4 (information collection) - ALL 6 QUESTIONS REQUIRED
+- ❌ Skip Step 5 (confirmation) - MUST WAIT FOR "YES"
+- ❌ Skip any step for any reason
+- ❌ Ask about session type (always use vibe session)
+- ❌ Mix languages after user selects a language
+- ❌ Ask custom business questions not in the workflow
+- ❌ Combine multiple questions into one message
+- ❌ Assume user wants to proceed without explicit confirmation
+- ❌ Call fsWrite to create code files before Step 6
+
+### ✅ ALWAYS (THESE ACTIONS ARE MANDATORY):
+- ✅ Start with Step 1 language question - NO EXCEPTIONS
+- ✅ Always use vibe session mode (never ask about session type)
+- ✅ Use ONLY the selected language for ALL messages (no mixing)
+- ✅ Follow steps 1→2→3→4→5→6 in exact order
+- ✅ Wait for user response at each step before proceeding
+- ✅ Use numbered options for all questions
+- ✅ Ask ONE question at a time in Step 4
+- ✅ Create plan before collecting info
+- ✅ Collect ALL 6 info answers before generating code
+- ✅ Wait for "yes" confirmation before generating code
+- ✅ Read approved plan before generating code in Step 6
+
+### 🚨 CHECKPOINT VERIFICATION (Ask yourself before each action):
+- "Am I at the correct step?"
+- "Did I complete all previous steps?"
+- "Did I wait for user response?"
+- "Am I about to skip a step?" (If yes, STOP)
+- "Am I about to generate code?" (If yes, verify Steps 1-5 complete)
+
+---
+
+## Visual Workflow
+
+```
+🎯 START HERE - YOU ARE AT STEP 1
+  ↓
+[1] Select Language ← 🚨 YOUR FIRST ACTION: ASK LANGUAGE QUESTION
+  ↓ ⏸️ MANDATORY WAIT FOR USER ANSWER
+  ↓
+[2] Describe Requirements
+  ↓ ⏸️ MANDATORY WAIT FOR USER DESCRIPTION
+  ↓ (Call MCP tools: get_integration_recommendation, find_api_endpoint, search_integration_guides)
+  ↓
+[3] Create integration-plan.md → Present to user
+  ↓ ⏸️ MANDATORY WAIT FOR USER APPROVAL
+  ↓ 🛑 STOP - DO NOT GENERATE CODE
+  ↓
+[4] Information Collection (6 Questions - ONE AT A TIME)
+    Q1: Programming Language → ⏸️ WAIT
+    Q2: Code Structure → ⏸️ WAIT
+    Q3: Credential Handling → ⏸️ WAIT
+    Q4: Features → ⏸️ WAIT
+    Q5: Environment → ⏸️ WAIT
+    Q6: Custom Requirements → ⏸️ WAIT
+  ↓ 🛑 STOP - DO NOT GENERATE CODE YET
+  ↓
+[5] "Ready to generate code?" 
+  ↓ ⏸️ MANDATORY WAIT FOR USER "YES"
+  ↓ 🛑 FINAL STOP - VERIFY USER SAID "YES"
+  ↓
+[6] ✅ NOW GENERATE CODE → Deliver files
+  ↓
+🎉 END - SUCCESS
+```
+
+**KEY:**
+- 🚨 = Critical action point
+- ⏸️ = Mandatory pause - wait for user
+- 🛑 = Stop sign - do not proceed
+- ✅ = Authorization granted
+
+---
+
+## Example Session
+
+**Agent:** Which language would you like to use for our conversation? 1) English 2) Chinese (中文)
+**User:** 1
+
+**Agent:** Please describe what you want to build with PayerMax APIs
+**User:** I need card payment and refund for my e-commerce site
+
+**Agent:** *Creates integration-plan.md*
+I've created an integration plan with 6 API endpoints. Please review the plan. Reply with: 1) Approve 2) Request changes
+**User:** 1
+
+**Agent:** Which programming language? 1) Python 2) Node.js...
+**User:** 2
+
+**Agent:** What code structure? 1) Class-based 2) Standalone...
+**User:** 3
+
+**Agent:** How to handle credentials? 1) Placeholders 2) Actual...
+**User:** 3
+
+**Agent:** Which features? 1) Error handling 2) Logging...
+**User:** 1,2,3
+
+**Agent:** Which environment? 1) UAT 2) Production
+**User:** 1
+
+**Agent:** Any special requirements? 1) No special requirements 2) Yes - I'll describe them
+**User:** 1
+
+**Agent:** All information collected! Ready to generate code? 1) Yes - start generating code 2) No - I need to make changes
+**User:** 1
+
+**Agent:** *Generates 8 files: config, 6 endpoints, README*
+
+---
+
+## File Structure Generated
+
+### API Endpoint Files
+- `config.js` - Configuration
+- `payment_create.js` - Payment creation
+- `payment_query.js` - Payment query
+- `payment_notification.js` - Payment webhook
+- `refund_request.js` - Refund request
+- `refund_query.js` - Refund query
+- `refund_notification.js` - Refund webhook
+- `payermax_client.js` - Main module
+
+### Web Integration Files (Cashier/Drop-in)
+- `frontend_integration.html` - Frontend page
+- `backend_api.js` - Backend server
+
+### Documentation
+- `README.md` - Usage instructions
+
+---
 
 ## Troubleshooting
 
-### Issue: Missing Required Fields
+### Issue: Agent Generated Code Without Plan
+**Solution:** Agent MUST create plan first. Stop and request: "Please create the integration plan first"
 
-**Solution**: Always call `get_api_documentation()` to get the complete parameter list. Check the "必填" (Required) column.
+### Issue: Agent Skipped Information Collection
+**Solution:** Agent MUST ask all 6 questions in Step 4. This is mandatory.
 
-### Issue: Parameter Length Violations
+### Issue: Agent Asked Custom Questions
+**Solution:** Agent should only ask the standardized questions with numbered options (1, 2, 3, etc.).
 
-**Solution**: Check the "限制" (Limit) column in the API spec and add validation.
+### Issue: Agent Combined Multiple Questions
+**Solution:** Agent must ask ONE question at a time and wait for user answer before proceeding.
 
-### Issue: Signature Generation
+### Issue: Missing Frontend/Backend Files
+**Solution:** For Cashier/Drop-in modes, agent must generate frontend HTML and backend API files.
 
-**Solution**: Refer to PayerMax technical documentation for signature algorithm. This is typically RSA with SHA256.
+### Issue: User Provides Text Instead of Number
+**Solution:** Agent should accept both numbered responses (1, 2, 3) and text responses ("yes", "Python", etc.) for flexibility.
 
-### Issue: Response Parsing
+---
 
-**Solution**: Use the response structure from `get_api_documentation()` to understand all possible fields.
+## Integration Checklist
 
-## Next Steps
+### Before Testing
+- [ ] Register at PayerMax Developer Center
+- [ ] Obtain test credentials (merchantNo, appId)
+- [ ] Generate RSA key pair
+- [ ] Upload public key
+- [ ] Configure callback URLs
+- [ ] Enable payment methods
 
-- Read `advanced-patterns.md` for complex scenarios
-- Explore multi-API integrations
-- Learn about error handling strategies
-- Implement retry logic and timeouts
+### Testing
+- [ ] Test successful transaction
+- [ ] Test failed transaction
+- [ ] Verify callbacks work
+- [ ] Test error handling
+
+### Production
+- [ ] Get production credentials
+- [ ] Upload production public key
+- [ ] Update to production URLs
+- [ ] Configure production callbacks
+- [ ] Test in production
+
+For detailed setup, refer to PayerMax Developer Center documentation.

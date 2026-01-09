@@ -1,0 +1,162 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'OpenSearch Serverless Collection for PayerMax MCP Server in VPC'
+
+Parameters:
+  VpcName:
+    Type: String
+    Default: payermax-mcp
+    Description: Name prefix for VPC resources (must match VPC stack)
+  
+  CollectionName:
+    Type: String
+    Default: payermax-docs
+    Description: Name of the OpenSearch Serverless collection
+    AllowedPattern: ^[a-z][a-z0-9-]{2,31}$
+    ConstraintDescription: Must be lowercase, start with a letter, and be 3-32 characters
+  
+  IndexName:
+    Type: String
+    Default: payermax-docs
+    Description: Name of the index to create
+  
+  LambdaExecutionRoleArn:
+    Type: String
+    Description: ARN of the Lambda execution role that needs access to OpenSearch
+    Default: ''
+  
+  AdditionalPrincipalArns:
+    Type: CommaDelimitedList
+    Description: Additional IAM principal ARNs that need access (comma-separated)
+    Default: ''
+
+Resources:
+  # Encryption Policy (required for serverless)
+  EncryptionPolicy:
+    Type: AWS::OpenSearchServerless::SecurityPolicy
+    Properties:
+      Name: !Sub '${CollectionName}-encryption'
+      Type: encryption
+      Policy: !Sub |
+        {
+          "Rules": [
+            {
+              "ResourceType": "collection",
+              "Resource": ["collection/${CollectionName}"]
+            }
+          ],
+          "AWSOwnedKey": true
+        }
+
+  # Network Policy - VPC access only
+  NetworkPolicy:
+    Type: AWS::OpenSearchServerless::SecurityPolicy
+    Properties:
+      Name: !Sub '${CollectionName}-network'
+      Type: network
+      Policy: !Sub
+        - |
+          [
+            {
+              "Rules": [
+                {
+                  "ResourceType": "collection",
+                  "Resource": ["collection/${CollectionName}"]
+                },
+                {
+                  "ResourceType": "dashboard",
+                  "Resource": ["collection/${CollectionName}"]
+                }
+              ],
+              "AllowFromPublic": false,
+              "SourceVPCEs": ["${VPCEndpointId}"]
+            }
+          ]
+        - VPCEndpointId:
+            Fn::ImportValue: !Sub '${VpcName}-OpenSearchServerless-ID'
+
+  # Data Access Policy
+  DataAccessPolicy:
+    Type: AWS::OpenSearchServerless::AccessPolicy
+    Properties:
+      Name: !Sub '${CollectionName}-access'
+      Type: data
+      Policy: !Sub
+        - |
+          [
+            {
+              "Rules": [
+                {
+                  "ResourceType": "collection",
+                  "Resource": ["collection/${CollectionName}"],
+                  "Permission": [
+                    "aoss:CreateCollectionItems",
+                    "aoss:UpdateCollectionItems",
+                    "aoss:DescribeCollectionItems"
+                  ]
+                },
+                {
+                  "ResourceType": "index",
+                  "Resource": ["index/${CollectionName}/*"],
+                  "Permission": [
+                    "aoss:CreateIndex",
+                    "aoss:DeleteIndex",
+                    "aoss:UpdateIndex",
+                    "aoss:DescribeIndex",
+                    "aoss:ReadDocument",
+                    "aoss:WriteDocument"
+                  ]
+                }
+              ],
+              "Principal": ${PrincipalList}
+            }
+          ]
+        - PrincipalList: !Sub
+            - '["${LambdaExecutionRoleArn}","${JoinedAdditionalPrincipals}"]'
+            - JoinedAdditionalPrincipals: !Join ['","', !Ref AdditionalPrincipalArns]
+
+  # OpenSearch Serverless Collection
+  OpenSearchCollection:
+    Type: AWS::OpenSearchServerless::Collection
+    DependsOn:
+      - EncryptionPolicy
+      - NetworkPolicy
+      - DataAccessPolicy
+    Properties:
+      Name: !Ref CollectionName
+      Type: VECTORSEARCH
+      Description: Vector search collection for PayerMax API documentation and integration guides
+
+Outputs:
+  CollectionEndpoint:
+    Description: OpenSearch Serverless collection endpoint
+    Value: !GetAtt OpenSearchCollection.CollectionEndpoint
+    Export:
+      Name: !Sub '${AWS::StackName}-Endpoint'
+  
+  CollectionArn:
+    Description: ARN of the OpenSearch Serverless collection
+    Value: !GetAtt OpenSearchCollection.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-Arn'
+  
+  CollectionId:
+    Description: ID of the OpenSearch Serverless collection
+    Value: !GetAtt OpenSearchCollection.Id
+    Export:
+      Name: !Sub '${AWS::StackName}-Id'
+  
+  DashboardEndpoint:
+    Description: OpenSearch Dashboards endpoint
+    Value: !GetAtt OpenSearchCollection.DashboardEndpoint
+  
+  IndexName:
+    Description: Name of the index to use
+    Value: !Ref IndexName
+    Export:
+      Name: !Sub '${AWS::StackName}-IndexName'
+  
+  CollectionName:
+    Description: Name of the collection
+    Value: !Ref CollectionName
+    Export:
+      Name: !Sub '${AWS::StackName}-CollectionName'

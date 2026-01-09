@@ -1,0 +1,146 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Deploy PayerMax MCP Gateway Target'
+
+Parameters:
+  GatewayName:
+    Type: String
+    Default: 'payermax-mcp-gateway'
+    Description: Gateway name (all lowercase)
+    
+  GatewayStackName:
+    Type: String
+    Default: 'payermax-mcp-gateway-stack'
+    Description: Name of the Gateway CloudFormation stack
+    
+  LambdaStackName:
+    Type: String
+    Default: 'payermax-mcp-lambda-stack'
+    Description: Name of the Lambda CloudFormation stack
+    
+Resources:
+  # AgentCore Gateway Target
+  AgentCoreGatewayTarget:
+    Type: AWS::BedrockAgentCore::GatewayTarget
+    Properties:
+      GatewayIdentifier:
+        Fn::ImportValue: !Sub '${GatewayStackName}-GatewayId'
+      Name: !Sub '${GatewayName}-target'
+      TargetConfiguration:
+        Mcp:
+          Lambda:
+            LambdaArn:
+              Fn::ImportValue: !Sub '${LambdaStackName}-LambdaArn'
+            ToolSchema:
+              InlinePayload:
+                - Name: find_api_endpoint
+                  Description: "Find the correct PayerMax API endpoint and sample code for your integration needs"
+                  InputSchema:
+                    Type: object
+                    Description: "Structured parameters for API endpoint selection"
+                    Properties:
+                      task_type:
+                        Type: string
+                        Description: "Type of task (create_payment, query_payment, refund, payout, etc.)"
+                      payment_type:
+                        Type: string
+                        Description: "Payment method type (card, wallet, bank_transfer, cash, any)"
+                      integration_mode:
+                        Type: string
+                        Description: "Integration mode (cashier, api, drop_in, link, any)"
+                      additional_requirements:
+                        Type: string
+                        Description: "Additional context or requirements"
+                      include_samples:
+                        Type: boolean
+                        Description: "Whether to include sample code"
+                    Required:
+                      - task_type
+                  OutputSchema:
+                    Type: object
+                    Description: "API endpoint details with reasoning and samples"
+                
+                - Name: get_integration_recommendation
+                  Description: "Get integration method recommendations based on your requirements"
+                  InputSchema:
+                    Type: object
+                    Description: "Natural language description of integration requirements"
+                    Properties:
+                      user_description:
+                        Type: string
+                        Description: "Describe what you want to build and your constraints"
+                    Required:
+                      - user_description
+                  OutputSchema:
+                    Type: object
+                    Description: "Integration recommendations with step-by-step guidance"
+                
+                - Name: search_api_documentation
+                  Description: "Semantic search through PayerMax API documentation"
+                  InputSchema:
+                    Type: object
+                    Description: "Search query for API documentation"
+                    Properties:
+                      query:
+                        Type: string
+                        Description: "Natural language query describing what you're looking for"
+                      top_k:
+                        Type: integer
+                        Description: "Number of results to return (default: 5)"
+                      doc_type_filter:
+                        Type: string
+                        Description: "Filter by document type (api_doc, api_sample, or null for all)"
+                      category_filter:
+                        Type: string
+                        Description: "Filter by category"
+                    Required:
+                      - query
+                  OutputSchema:
+                    Type: object
+                    Description: "Relevant API documentation with relevance scores"
+                
+                - Name: search_integration_guides
+                  Description: "Semantic search through integration guides and workflows"
+                  InputSchema:
+                    Type: object
+                    Description: "Search query for integration guides"
+                    Properties:
+                      query:
+                        Type: string
+                        Description: "Natural language description of what you want to integrate"
+                      top_k:
+                        Type: integer
+                        Description: "Number of results to return (default: 5)"
+                      doc_type_filter:
+                        Type: string
+                        Description: "Filter by document type (integration_guide, payermax_doc, or null)"
+                      category_filter:
+                        Type: string
+                        Description: "Filter by category"
+                    Required:
+                      - query
+                  OutputSchema:
+                    Type: object
+                    Description: "Relevant integration guides with relevance scores"
+      CredentialProviderConfigurations:
+        - CredentialProviderType: GATEWAY_IAM_ROLE
+
+Outputs:
+  AgentCoreGatewayTargetId:
+    Description: AgentCore Gateway Target ID
+    Value: !Ref AgentCoreGatewayTarget
+    Export:
+      Name: !Sub '${AWS::StackName}-GatewayTargetId'
+
+  GatewayId:
+    Description: Referenced Gateway ID
+    Value:
+      Fn::ImportValue: !Sub '${GatewayStackName}-GatewayId'
+    Export:
+      Name: !Sub '${AWS::StackName}-ReferencedGatewayId'
+
+  LambdaArn:
+    Description: Referenced Lambda ARN
+    Value:
+      Fn::ImportValue: !Sub '${LambdaStackName}-LambdaArn'
+    Export:
+      Name: !Sub '${AWS::StackName}-ReferencedLambdaArn'
