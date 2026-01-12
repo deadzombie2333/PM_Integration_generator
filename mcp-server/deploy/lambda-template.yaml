@@ -50,9 +50,6 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
         - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
-      Tags:
-        - Key: auto-delete
-          Value: 'no'
       Policies:
         - PolicyName: !Sub '${GatewayName}-lambda-policy'
           PolicyDocument:
@@ -117,8 +114,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub '${GatewayName}-lambda'
-        - Key: auto-delete
-          Value: 'no'
 
 Outputs:
   LambdaFunctionArn:

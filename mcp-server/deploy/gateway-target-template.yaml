@@ -123,8 +123,6 @@ Resources:
                     Description: "Relevant integration guides with relevance scores"
       CredentialProviderConfigurations:
         - CredentialProviderType: GATEWAY_IAM_ROLE
-      Tags:
-        auto-delete: 'no'
 
 Outputs:
   AgentCoreGatewayTargetId:

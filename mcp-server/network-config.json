@@ -1,0 +1,54 @@
+{
+  "_metadata": {
+    "generated_from": "payermax-mcp-vpc-stack",
+    "generated_on": "2026-01-09T01:13:19Z",
+    "region": "us-west-2"
+  },
+  "vpc_id": "vpc-03e5f229c7f43233a",
+  "vpc_name": "prompt-refiner",
+  "nat_config": [
+    "nat-01c79ea53085292c4",
+    "nat-0c505449153db797c"
+  ],
+  "sg_config": [
+    "sg-03e910c72f3d67a75"
+  ],
+  "subnet_config": {
+    "Public-us-west-2a": {
+      "subnet_id": "subnet-0dd61df04a2850a68",
+      "rt_id": "rtb-00102386f4c81369c",
+      "elastic_ip_id": "eipalloc-020d6aab1d0714240"
+    },
+    "Public-us-west-2b": {
+      "subnet_id": "subnet-06747378709282f4c",
+      "rt_id": "rtb-00102386f4c81369c",
+      "elastic_ip_id": "eipalloc-06fb24e4daf7c03a7"
+    },
+    "Private-us-west-2a": {
+      "subnet_id": "subnet-0928d33ab142fa531",
+      "rt_id": "rtb-0ff00fe9f77e99bbf"
+    },
+    "Private-us-west-2b": {
+      "subnet_id": "subnet-05f955cc352e268bc",
+      "rt_id": "rtb-05b48ee6292c7b80a"
+    }
+  },
+  "vpc_endpoints": {
+    "s3_gateway": "vpce-037a5955c7c1be31d",
+    "ecr_docker": "vpce-0e251c5c137384fe1",
+    "ecr_api": "vpce-0def1c7a05042900f",
+    "logs": "vpce-04b567e0c042f1fc8",
+    "ssm": "vpce-0fcd0b76d5d7020a1",
+    "ssm_messages": "vpce-00f732be88638e45a",
+    "ec2_messages": "vpce-058cbd316067af235",
+    "bedrock": "vpce-0871b97e94d7e9fa5",
+    "bedrock_runtime": "vpce-05dd3c53e44354739",
+    "bedrock_agent": "vpce-07e971cb54a72994d",
+    "bedrock_agent_runtime": "vpce-0e75bacc439a39710",
+    "bedrock_agent_core": "vpce-0338ca1068a09c28d",
+    "bedrock_agent_core_gateway": "vpce-084bc3a23ddcbdd1e",
+    "lambda": "vpce-0eea5169d1eb70ce3",
+    "cognito": "vpce-0f92cf0aa31af74d0",
+    "opensearch_serverless": "vpce-0ffeae33ca1500747"
+  }
+}

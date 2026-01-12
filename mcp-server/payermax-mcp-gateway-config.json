@@ -1,0 +1,21 @@
+{
+  "region": "us-west-2",
+  "gateway_stack_name": "payermax-mcp-gateway-stack",
+  "gateway_name": "payermax-mcp-gateway",
+  "gateway_id": "payermax-mcp-gateway-l5md7vkt6g",
+  "gateway_url": "https://payermax-mcp-gateway-l5md7vkt6g.gateway.bedrock-agentcore.us-west-2.amazonaws.com/mcp",
+  "pool_id": "us-west-2_KJN7RUJ5o",
+  "client_id": "64jcu02ght46l23n7l7mpoc19f",
+  "client_secret": "1d7kd1slp9mailvdaehkitcl7b45k64q3761emem6fk7qugoi5mj",
+  "token_endpoint": "https://payermax-mcp-auth.auth.us-west-2.amazoncognito.com/oauth2/token",
+  "cognito_domain": "payermax-mcp-auth",
+  "scopes": "payermax-mcp/mcp:read payermax-mcp/mcp:write",
+  "jwt_issuer": "https://cognito-idp.us-west-2.amazonaws.com/us-west-2_KJN7RUJ5o",
+  "discovery_url": "https://cognito-idp.us-west-2.amazonaws.com/us-west-2_KJN7RUJ5o/.well-known/openid-configuration",
+  "authorizer_config": {
+    "jwtConfiguration": {
+      "issuer": "https://cognito-idp.us-west-2.amazonaws.com/us-west-2_KJN7RUJ5o",
+      "audience": ["64jcu02ght46l23n7l7mpoc19f"]
+    }
+  }
+}
