@@ -40,6 +40,8 @@ Resources:
           RequireLowercase: true
           RequireNumbers: true
           RequireSymbols: true
+      UserPoolTags:
+        auto-delete: 'no'
 
   # Cognito Domain
   CognitoDomain:
@@ -94,6 +96,9 @@ Resources:
             Action: sts:AssumeRole
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+      Tags:
+        - Key: auto-delete
+          Value: 'no'
       Policies:
         - PolicyName: !Sub '${GatewayName}-policy'
           PolicyDocument:
@@ -144,6 +149,8 @@ Resources:
       ProtocolConfiguration:
         Mcp:
           SearchType: SEMANTIC
+      Tags:
+        auto-delete: 'no'
 
 Outputs:
   AgentCoreGatewayId:

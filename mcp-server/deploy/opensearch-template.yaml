@@ -127,6 +127,9 @@ Resources:
       Name: !Ref CollectionName
       Type: VECTORSEARCH
       Description: Vector search collection for PayerMax API documentation and integration guides
+      Tags:
+        - Key: auto-delete
+          Value: 'no'
 
 Outputs:
   CollectionEndpoint:
