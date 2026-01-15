@@ -5,16 +5,7 @@
 keys/
 
 # AWS Deployment Configuration Files (generated during deployment)
-network-config.json
-network-config.json.backup.*
-payermax-mcp-gateway-config.json
-payermax-mcp-lambda-config.json
-payermax-mcp-opensearch-config.json
-payermax-mcp-complete-config.json
-lambda-deployment.zip
-mcp-credentials.json
-refresh-mcp-token.sh
-get-mcp-credentials.sh
+*.zip
 
 # Python
 __pycache__/
@@ -56,5 +47,4 @@ htmlcov/
 *.bak
 test.txt
 /mcp-server/lambda-package
-.kiro/settings/mcp.json
-.kiro/settings/mcp.json
+*.json
