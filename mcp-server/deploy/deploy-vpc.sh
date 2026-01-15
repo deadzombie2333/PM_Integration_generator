@@ -76,7 +76,7 @@ if [ $? -eq 0 ]; then
     fi
     
     VPC_ID=$(echo $OUTPUTS | jq -r '.[] | select(.OutputKey=="VPCId") | .OutputValue // "null"')
-    VPC_NAME="prompt-refiner"  # Use parameter value since it's not in outputs
+    # VPC_NAME is from the parameter, not outputs
     
     # Subnets
     PUBLIC_SUBNET_1=$(echo $OUTPUTS | jq -r '.[] | select(.OutputKey=="PublicSubnet1Id") | .OutputValue')

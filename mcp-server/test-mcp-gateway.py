@@ -2,14 +2,36 @@
 """
 Test script for PayerMax MCP Gateway
 Tests OAuth authentication and MCP tool invocation
+
+Prerequisites:
+1. Deploy the gateway stack: ./deploy/deploy-gateway.sh
+2. Deploy the lambda stack: ./deploy/deploy-lambda.sh
+3. Deploy the gateway target: ./deploy/deploy-gateway-target.sh
+4. This will create payermax-mcp-complete-config.json with all required credentials
 """
 import json
 import requests
 import base64
+import sys
 from urllib.parse import urlencode
+from pathlib import Path
 
 # Load configuration
-with open('payermax-mcp-complete-config.json', 'r') as f:
+config_file = Path('payermax-mcp-complete-config.json')
+if not config_file.exists():
+    print("❌ Error: payermax-mcp-complete-config.json not found")
+    print("")
+    print("Please complete the deployment first:")
+    print("1. ./deploy/deploy-vpc.sh")
+    print("2. ./deploy/deploy-lambda.sh")
+    print("3. ./deploy/deploy-opensearch.sh")
+    print("4. ./deploy/deploy-gateway.sh")
+    print("5. ./deploy/deploy-gateway-target.sh")
+    print("")
+    print("This will create the configuration file with all required credentials.")
+    sys.exit(1)
+
+with open(config_file, 'r') as f:
     config = json.load(f)
 
 GATEWAY_URL = config['gateway_url']

@@ -4,6 +4,8 @@ PayerMax API Documentation MCP Server
 
 Intelligent MCP server with LLM-based document selection and semantic search.
 Provides 4 specialized tools for different integration needs.
+
+this is only used for local MCP service
 """
 
 import os

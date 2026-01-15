@@ -88,19 +88,43 @@ Please describe what you want to build with PayerMax APIs
 
 **Agent waits for:** User description
 
-**Agent then:**
-1. Calls `get_integration_recommendation(user_description)`
-2. Calls `find_api_endpoint()` for each required task
-3. Calls `search_integration_guides()` for additional context
+**Agent then MUST call these MCP tools in order:**
+
+**🚨 CRITICAL: INTEGRATION GUIDELINES ARE MANDATORY 🚨**
+
+1. **FIRST:** Call `search_integration_guides(query=user_description)` 
+   - **WHY:** Integration guidelines provide the COMPLETE API pipeline for workflows
+   - **WHAT YOU GET:** All required APIs in correct sequence, workflow steps, dependencies
+   - **EXAMPLE:** For "card payment", guidelines show: create order → redirect to cashier → handle callback → query status
+   
+2. **SECOND:** Call `get_integration_recommendation(user_description)`
+   - Get product recommendation (Cashier/API/Drop-in/Link)
+   - Get payment type suggestions
+   
+3. **THIRD:** Call `find_api_endpoint()` for EACH API identified in integration guidelines
+   - Get detailed specifications for each endpoint
+   - Get request/response structures
+   - Get authentication requirements
+
+**⛔ CRITICAL FAILURE POINTS:**
+- ⛔ Skipping `search_integration_guides()` = INCOMPLETE API LIST
+- ⛔ Not reading integration guidelines = MISSING PIPELINE STEPS
+- ⛔ Only using `find_api_endpoint()` = MISSING WORKFLOW CONTEXT
+
+**✅ SUCCESS CRITERIA:**
+- ✅ Integration guidelines retrieved and reviewed
+- ✅ Complete API pipeline identified (all steps from start to finish)
+- ✅ All APIs in pipeline have detailed specifications
+- ✅ Workflow sequence understood (order matters!)
 
 **⛔ STOP SIGNS:**
 - ⛔ DO NOT create integration plan yet
 - ⛔ DO NOT ask information questions yet
 - ⛔ DO NOT generate any code
 
-**✅ ONLY CORRECT ACTION:** Collect user requirements, call MCP tools, then GO TO STEP 3
+**✅ ONLY CORRECT ACTION:** Collect user requirements, call ALL 3 MCP tools, then GO TO STEP 3
 
-**NEXT: After gathering all API information, GO TO STEP 3 (not before)**
+**NEXT: After gathering integration guidelines + recommendations + API specs, GO TO STEP 3 (not before)**
 
 ---
 
@@ -241,6 +265,17 @@ Which programming language?
 ```
 
 **⏸️ STOP AND WAIT for:** User answer (1-8)
+
+**Agent processes answer:**
+- User enters "1" → Agent records: "Python"
+- User enters "2" → Agent records: "Node.js"
+- User enters "3" → Agent records: "Java"
+- User enters "4" → Agent records: "PHP"
+- User enters "5" → Agent records: "Go"
+- User enters "6" → Agent records: "Ruby"
+- User enters "7" → Agent records: "C#"
+- User enters "8" → Agent records: "Shell"
+
 **❌ DO NOT ask Question 2 until user answers Question 1**
 
 ### Question 2: Code Structure
@@ -264,6 +299,13 @@ What code structure do you prefer?
 ```
 
 **⏸️ STOP AND WAIT for:** User answer (1-4)
+
+**Agent processes answer:**
+- User enters "1" → Agent records: "Class-based client" (Generate OOP classes with methods)
+- User enters "2" → Agent records: "Standalone function" (Generate independent functions)
+- User enters "3" → Agent records: "Complete module" (Generate full module with all components)
+- User enters "4" → Agent records: "Code snippet only" (Generate minimal code snippets)
+
 **❌ DO NOT ask Question 3 until user answers Question 2**
 
 ### Question 3: Credential Handling
@@ -271,7 +313,7 @@ What code structure do you prefer?
 **If English:**
 ```
 How should API credentials be handled?
-1) Use placeholders
+1) Use placeholders (recommended, secure)
 2) Provide actual credentials
 3) Use environment variables
 ```
@@ -279,12 +321,18 @@ How should API credentials be handled?
 **If Chinese:**
 ```
 API 凭证应该如何处理？
-1) 使用占位符
+1) 使用占位符（推荐，安全）
 2) 提供实际凭证
 3) 使用环境变量
 ```
 
 **⏸️ STOP AND WAIT for:** User answer (1-3)
+
+**Agent processes answer:**
+- User enters "1" → Agent records: "Use placeholders" (Code will use "YOUR_APP_ID", "YOUR_MERCHANT_NO", etc.)
+- User enters "2" → Agent records: "Provide actual credentials" (Agent will ask for appId, merchantNo, keys)
+- User enters "3" → Agent records: "Use environment variables" (Code will use process.env.APP_ID, os.getenv(), etc.)
+
 **❌ DO NOT ask Question 4 until user answers Question 3**
 
 ### Question 4: Features
@@ -312,24 +360,74 @@ Which features? (comma-separated, e.g., 1,2,4)
 ```
 
 **⏸️ STOP AND WAIT for:** User answer (1-6, comma-separated)
+
+**Agent processes answer:**
+- User enters "1" → Include try-catch blocks, error handling
+- User enters "2" → Include logging statements (console.log, logger, etc.)
+- User enters "3" → Include input validation checks
+- User enters "4" → Include type hints/annotations (TypeScript types, Python type hints)
+- User enters "5" → Include usage examples in comments or separate example file
+- User enters "6" → Generate unit test files
+
+**Examples:**
+- User enters "1,2,3" → Include error handling + logging + validation
+- User enters "1,2,3,4,5,6" → Include all features
+- User enters "1" → Include only error handling
+
 **❌ DO NOT ask Question 5 until user answers Question 4**
 
 ### Question 5: Environment
+
+**If English:**
 ```
 Which environment?
 1) UAT (testing)
 2) Production
 ```
+
+**If Chinese:**
+```
+选择哪个环境？
+1) UAT（测试环境）
+2) Production（生产环境）
+```
+
 **⏸️ STOP AND WAIT for:** User answer (1-2)
+
+**Agent processes answer:**
+- User enters "1" → Agent records: "UAT" (Use https://uat-api.payermax.com endpoints)
+- User enters "2" → Agent records: "Production" (Use https://api.payermax.com endpoints)
+
 **❌ DO NOT ask Question 6 until user answers Question 5**
 
 ### Question 6: Custom Requirements
+
+**If English:**
 ```
 Any special requirements?
 1) No special requirements
 2) Yes - I'll describe them
 ```
+
+**If Chinese:**
+```
+有特殊要求吗？
+1) 没有特殊要求
+2) 有 - 我会描述它们
+```
+
 **⏸️ STOP AND WAIT for:** User answer (1 or 2, or direct text description)
+
+**Agent processes answer:**
+- User enters "1" → Agent records: "No special requirements" (Proceed with standard generation)
+- User enters "2" → Agent asks: "Please describe your special requirements" and waits for user description
+- User provides text directly → Agent records the custom requirements
+
+**Examples of custom requirements:**
+- "Add retry logic for failed requests"
+- "Use axios instead of fetch"
+- "Include webhook signature verification"
+- "Add rate limiting"
 
 **⛔ CRITICAL STOP SIGNS:**
 - ⛔ DO NOT ask multiple questions at once

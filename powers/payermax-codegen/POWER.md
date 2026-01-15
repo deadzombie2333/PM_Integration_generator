@@ -58,8 +58,20 @@ This power uses the PayerMax API Documentation MCP server with AWS Nova LLM and 
 
 ## Available MCP Tools
 
-### Tool 1: find_api_endpoint()
-Finds correct API endpoint specifications using LLM analysis.
+### Tool 1: get_integration_recommendation()
+Analyzes requirements and recommends best integration method with detailed integration plan.
+
+**Parameters:**
+- `user_description`: Natural language description of requirements
+
+**Returns:**
+- Recommended PayerMax product (Cashier/API/Drop-in/Link)
+- Suggested payment types
+- Integration approach overview
+- High-level architecture recommendations
+
+### Tool 2: find_api_endpoint()
+Finds correct API endpoint specifications with detailed configuration using LLM analysis.
 
 **Parameters:**
 - `task_type`: create_payment, query_payment, refund, etc.
@@ -67,11 +79,102 @@ Finds correct API endpoint specifications using LLM analysis.
 - `integration_mode`: cashier, api, drop_in, link
 - `include_samples`: Include sample code (default: True)
 
-### Tool 2: get_integration_recommendation()
-Analyzes requirements and recommends best integration method.
+**Returns:**
+- Complete API endpoint specifications
+- Request/response payload structures
+- Required parameters and data types
+- Authentication and signature requirements
+- Sample code snippets
+
+### Tool 3: search_integration_guides()
+**⚠️ MOST IMPORTANT TOOL - CALL THIS FIRST ⚠️**
+
+Searches integration documentation to get the COMPLETE API pipeline for workflows.
+
+**WHY THIS IS CRITICAL:**
+Integration guides contain the complete workflow with ALL required APIs in correct sequence. Without this, you will miss APIs and create incomplete integrations.
 
 **Parameters:**
-- `user_description`: Natural language description of requirements
+- `query`: Natural language description of what you want to integrate
+- `top_k`: Number of results to return (default: 5)
+- `doc_type_filter`: Filter by document type (integration_guide, payermax_doc, or null)
+- `category_filter`: Filter by category
+
+**Returns:**
+- **Complete API pipeline** (all APIs from start to finish)
+- **Correct API sequence** (order matters!)
+- **Workflow dependencies** (which APIs depend on others)
+- Best practices and recommendations
+- Common pitfalls and solutions
+- Additional configuration details
+
+**EXAMPLE:**
+Query: "card payment integration"
+Returns: 
+1. Create payment order API
+2. Redirect to cashier API
+3. Payment callback handling
+4. Query payment status API
+5. Refund API (if needed)
+
+**ALWAYS CALL THIS FIRST in Step 2 before other MCP tools!**
+
+## Critical MCP Requirements
+
+⚠️ **MANDATORY: INTEGRATION GUIDELINES FIRST - THEY CONTAIN THE COMPLETE API PIPELINE** ⚠️
+
+**CRITICAL UNDERSTANDING:**
+Integration guidelines are NOT optional context - they are the SOURCE OF TRUTH for:
+- Complete API pipeline (all APIs needed from start to finish)
+- Correct API sequence (order matters!)
+- Workflow dependencies (which APIs depend on others)
+- Required parameters across the pipeline
+- Callback handling requirements
+
+**MANDATORY CALL SEQUENCE:**
+
+1. **FIRST: `search_integration_guides(query=user_description)`**
+   - **PURPOSE:** Get the COMPLETE API pipeline for the workflow
+   - **RETURNS:** 
+     - All APIs required for the complete workflow
+     - Correct sequence of API calls
+     - Dependencies between APIs
+     - Workflow steps from start to finish
+   - **EXAMPLE:** "card payment" returns: create order → cashier redirect → callback handling → query status → refund (if needed)
+
+2. **SECOND: `get_integration_recommendation(user_description)`**
+   - **PURPOSE:** Get product and payment type recommendations
+   - **RETURNS:**
+     - Recommended PayerMax product (Cashier/API/Drop-in/Link)
+     - Suggested payment types
+     - Integration architecture overview
+
+3. **THIRD: `find_api_endpoint()` for EACH API from integration guidelines**
+   - **PURPOSE:** Get detailed specifications for each endpoint in the pipeline
+   - **RETURNS:**
+     - Complete endpoint specifications
+     - Request/response payload structures
+     - Required parameters and data types
+     - Authentication and signature requirements
+     - Sample code snippets
+
+**WHY THIS ORDER MATTERS:**
+- Integration guidelines give you the COMPLETE list of APIs (don't miss any!)
+- Recommendations tell you WHICH product/payment type to use
+- Endpoint details give you HOW to implement each API
+
+**FAILURE SCENARIOS:**
+- ❌ Skip integration guidelines → Missing APIs in pipeline → Incomplete integration
+- ❌ Only use `find_api_endpoint()` → Don't know which APIs are needed → Wrong implementation
+- ❌ Wrong order → Miss dependencies → Integration fails
+
+**SUCCESS CRITERIA:**
+- ✅ Integration guidelines retrieved FIRST
+- ✅ Complete API pipeline identified (all steps)
+- ✅ All APIs have detailed specifications
+- ✅ Workflow sequence documented in integration plan
+
+The workflow in Step 2 ensures all three are collected in correct order before creating the integration plan in Step 3.
 
 ## Workflow
 

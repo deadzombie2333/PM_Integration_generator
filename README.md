@@ -430,6 +430,4 @@ For issues and questions:
 
 ---
 
-**Last Updated**: January 2026  
-**PayerMax API Version**: 1.4  
-**AWS Region**: us-west-2
+**PayerMax API Version**: 1.4
