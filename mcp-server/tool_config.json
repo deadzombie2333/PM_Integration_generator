@@ -1,159 +1,91 @@
 {
   "tool_1_api_endpoint_finder": {
-    "name": "API Endpoint Finder",
-    "description": "Finds correct API endpoint specifications and samples based on user requirements",
-    "overview_documents": [
-      "api-docs/README.md",
-      "api-docs/STRUCTURE.md"
-    ],
     "document_categories": {
       "payment_acceptance": {
-        "description": "Payment collection APIs",
+        "name": "Payment Acceptance",
+        "description": "Standard payment creation and processing",
         "documents": [
-          "api-docs/收单/收银台-下单.md",
           "api-docs/收单/纯API支付.md",
-          "api-docs/收单/交易查询.md",
+          "api-docs/收单/收银台-下单.md",
           "api-docs/收单/支付确认.md",
+          "api-docs/收单/交易查询.md",
           "api-docs/收单/支付结果通知.md",
           "api-docs/收单/页面回跳.md"
-        ],
-        "samples": [
-          "api-samples/收单/收银台-下单.md",
-          "api-samples/收单/纯API支付.md",
-          "api-samples/收单/交易查询.md",
-          "api-samples/收单/支付确认.md"
+        ]
+      },
+      "drop_in": {
+        "name": "Drop-in Component",
+        "description": "Frontend component integration",
+        "documents": [
+          "api-docs/收单:前置组件Drop-In/前置组件支付.md",
+          "api-docs/收单:前置组件Drop-In/Apply Drop-in Session.md",
+          "api-docs/收单:Auth-Capture/Apply Drop-in Session.md",
+          "api-docs/收单:Auth-Capture/前置组件支付.md"
+        ]
+      },
+      "payment_link": {
+        "name": "Payment Link",
+        "description": "Link-based payment",
+        "documents": [
+          "api-docs/收单:链接支付/创建链接.md",
+          "api-docs/收单:链接支付/查询链接详情.md",
+          "api-docs/收单:链接支付/失效支付链接.md",
+          "api-docs/收单:链接支付/支付链接更新回调.md"
         ]
       },
       "refund": {
-        "description": "Refund APIs",
+        "name": "Refund",
+        "description": "Refund operations",
         "documents": [
           "api-docs/收单/退款申请.md",
           "api-docs/收单/退款查询.md",
           "api-docs/收单/退款通知.md"
-        ],
-        "samples": [
-          "api-samples/收单/退款申请.md",
-          "api-samples/收单/退款查询.md"
         ]
       },
       "payout": {
-        "description": "Payout/disbursement APIs",
+        "name": "Payout",
+        "description": "Payout operations",
         "documents": [
           "api-docs/付款/申请付款.md",
           "api-docs/付款/付款查询.md",
           "api-docs/付款/付款结果通知.md",
           "api-docs/付款/出款要素校验.md"
-        ],
-        "samples": [
-          "api-samples/付款/申请付款.md",
-          "api-samples/付款/付款查询.md",
-          "api-samples/付款/出款要素校验.md"
-        ]
-      },
-      "auth_capture": {
-        "description": "Authorization and capture APIs",
-        "documents": [
-          "api-docs/收单:Auth-Capture/收银台-下单.md",
-          "api-docs/收单:Auth-Capture/纯API支付.md",
-          "api-docs/收单:Auth-Capture/前置组件支付.md",
-          "api-docs/收单:Auth-Capture/请款.md",
-          "api-docs/收单:Auth-Capture/撤销.md",
-          "api-docs/收单:Auth-Capture/授权结果通知.md",
-          "api-docs/收单:Auth-Capture/请款通知.md",
-          "api-docs/收单:Auth-Capture/撤销通知.md",
-          "api-docs/收单:Auth-Capture/Apply Drop-in Session.md"
-        ],
-        "samples": [
-          "api-samples/收单:Auth-Capture/收银台-下单.md",
-          "api-samples/收单:Auth-Capture/纯API支付.md",
-          "api-samples/收单:Auth-Capture/前置组件支付.md",
-          "api-samples/收单:Auth-Capture/请款.md",
-          "api-samples/收单:Auth-Capture/撤销.md"
         ]
       },
       "tokenization": {
-        "description": "Tokenization and saved card APIs",
+        "name": "Tokenization",
+        "description": "Card tokenization and saved cards",
         "documents": [
           "api-docs/收单:Tokenization支付/PaymentTokenID申请.md",
           "api-docs/收单:Tokenization支付/PaymentTokenID申请结果查询.md",
           "api-docs/收单:Tokenization支付/paymentTokenID查询.md",
           "api-docs/收单:Tokenization支付/paymentTokenID解绑.md",
           "api-docs/收单:Tokenization支付/异步通知.md"
-        ],
-        "samples": [
-          "api-samples/收单:Tokenization支付/PaymentTokenID申请.md",
-          "api-samples/收单:Tokenization支付/PaymentTokenID申请结果查询.md",
-          "api-samples/收单:Tokenization支付/paymentTokenID查询.md",
-          "api-samples/收单:Tokenization支付/paymentTokenID解绑.md"
         ]
       },
       "subscription": {
-        "description": "Subscription and recurring payment APIs",
+        "name": "Subscription",
+        "description": "Recurring payments and subscriptions",
         "documents": [
           "api-docs/收单:订阅计划管理/创建订阅计划.md",
           "api-docs/收单:订阅计划管理/取消订阅计划.md",
           "api-docs/收单:订阅计划管理/订阅结果查询.md",
-          "api-docs/收单:订阅计划管理/订阅状态变更通知.md",
-          "api-docs/收单:订阅计划管理/扣款结果通知.md"
-        ],
-        "samples": [
-          "api-samples/收单:订阅计划管理/创建订阅计划.md",
-          "api-samples/收单:订阅计划管理/取消订阅计划.md",
-          "api-samples/收单:订阅计划管理/订阅结果查询.md"
-        ]
-      },
-      "payment_link": {
-        "description": "Payment link APIs",
-        "documents": [
-          "api-docs/收单:链接支付/创建链接.md",
-          "api-docs/收单:链接支付/查询链接详情.md",
-          "api-docs/收单:链接支付/失效支付链接.md",
-          "api-docs/收单:链接支付/支付链接更新回调.md"
-        ],
-        "samples": [
-          "api-samples/收单:链接支付/创建链接.md",
-          "api-samples/收单:链接支付/查询链接详情.md",
-          "api-samples/收单:链接支付/失效支付链接.md"
-        ]
-      },
-      "drop_in": {
-        "description": "Drop-in component APIs",
-        "documents": [
-          "api-docs/收单:前置组件Drop-In/Apply Drop-in Session.md",
-          "api-docs/收单:前置组件Drop-In/前置组件支付.md"
-        ],
-        "samples": [
-          "api-samples/收单:前置组件Drop-In/Apply Drop-in Session.md",
-          "api-samples/收单:前置组件Drop-In/前置组件支付.md"
-        ]
-      },
-      "account_payment": {
-        "description": "Account/bill payment APIs",
-        "documents": [
-          "api-docs/收单:账户支付/账单支付校验接口.md",
-          "api-docs/收单:账户支付/支付成功通知商户.md",
-          "api-docs/收单:账户支付/商户入账结果确认.md"
-        ],
-        "samples": [
-          "api-samples/收单:账户支付/账单支付校验接口.md",
-          "api-samples/收单:账户支付/支付成功通知商户.md",
-          "api-samples/收单:账户支付/商户入账结果确认.md"
+          "api-docs/收单:订阅计划管理/扣款结果通知.md",
+          "api-docs/收单:订阅计划管理/订阅状态变更通知.md"
         ]
       },
       "dispute": {
-        "description": "Dispute/chargeback APIs",
+        "name": "Dispute",
+        "description": "Dispute and chargeback management",
         "documents": [
           "api-docs/收单:争议/案件查询.md",
           "api-docs/收单:争议/案件回复.md",
           "api-docs/收单:争议/争议异步通知.md"
-        ],
-        "samples": [
-          "api-samples/收单:争议/案件查询.md",
-          "api-samples/收单:争议/案件回复.md"
         ]
       },
       "fund_management": {
-        "description": "Multi-currency fund management APIs",
+        "name": "Fund Management",
+        "description": "Balance and currency exchange",
         "documents": [
           "api-docs/多币种资金管理/实时余额查询.md",
           "api-docs/多币种资金管理/日终余额查询.md",
@@ -162,254 +94,43 @@
           "api-docs/多币种资金管理/实时汇率查询.md",
           "api-docs/多币种资金管理/动账通知.md",
           "api-docs/多币种资金管理/本地银行收款通知.md"
-        ],
-        "samples": [
-          "api-samples/多币种资金管理/实时余额查询.md",
-          "api-samples/多币种资金管理/日终余额查询.md",
-          "api-samples/多币种资金管理/换汇申请.md",
-          "api-samples/多币种资金管理/换汇结果查询.md",
-          "api-samples/多币种资金管理/实时汇率查询.md"
         ]
       },
       "risk_control": {
-        "description": "Risk control and fraud prevention APIs",
+        "name": "Risk Control",
+        "description": "Risk management and fraud prevention",
         "documents": [
           "api-docs/风控/添加或删除风控名单.md",
-          "api-docs/风控/Rfi通知.md",
+          "api-docs/风控/风控欺诈通知.md",
           "api-docs/风控/补充Rfi材料接口.md",
-          "api-docs/风控/风控欺诈通知.md"
-        ],
-        "samples": [
-          "api-samples/风控/添加或删除风控名单.md",
-          "api-samples/风控/补充Rfi材料接口.md",
-          "api-samples/风控/Rfi通知.md",
-          "api-samples/风控/风控欺诈通知.md"
+          "api-docs/风控/Rfi通知.md"
         ]
       },
-      "developer_tools": {
-        "description": "Developer tools and configuration",
-        "samples": [
-          "api-samples/开发者工具/公钥和私钥配置.md"
+      "auth_capture": {
+        "name": "Auth-Capture",
+        "description": "Authorization and capture flow",
+        "documents": [
+          "api-docs/收单:Auth-Capture/纯API支付.md",
+          "api-docs/收单:Auth-Capture/收银台-下单.md",
+          "api-docs/收单:Auth-Capture/请款.md",
+          "api-docs/收单:Auth-Capture/撤销.md",
+          "api-docs/收单:Auth-Capture/授权结果通知.md",
+          "api-docs/收单:Auth-Capture/请款通知.md",
+          "api-docs/收单:Auth-Capture/撤销通知.md"
+        ]
+      },
+      "account_payment": {
+        "name": "Account Payment",
+        "description": "Bill payment and account-based payments",
+        "documents": [
+          "api-docs/收单:账户支付/账单支付校验接口.md",
+          "api-docs/收单:账户支付/支付成功通知商户.md",
+          "api-docs/收单:账户支付/商户入账结果确认.md"
         ]
       }
     }
   },
-  "tool_2_integration_assistant": {
-    "name": "Integration Assistant",
-    "description": "Analyzes user requirements and recommends the best integration method",
-    "integration_methods": {
-      "cashier_mode": {
-        "name": "Cashier Mode (Hosted Checkout)",
-        "complexity": "Low",
-        "pci_required": false,
-        "documents": [
-          "integration_process/收银台支付/收银台支付集成概览.md",
-          "integration_process/收银台支付/收银台支付集成.md",
-          "integration_process/收银台支付/收银台支付流程.md",
-          "integration_process/收银台支付/收银台支付接口.md",
-          "integration_process/收银台支付/收银台支付示例.md",
-          "integration_process/收银台支付/收银台测试上线.md"
-        ]
-      },
-      "pure_api_mode": {
-        "name": "Pure API Mode",
-        "complexity": "High",
-        "pci_required": true,
-        "documents": [
-          "integration_process/纯API模式/纯API支付集成.md"
-        ]
-      },
-      "drop_in_mode": {
-        "name": "Drop-in Component Mode",
-        "complexity": "Medium",
-        "pci_required": false,
-        "documents": [
-          "integration_process/前置组件/卡支付前端接口.md",
-          "integration_process/前置组件/ApplePay前端接口.md",
-          "integration_process/前置组件/GooglePay前端接口.md",
-          "integration_process/前置组件/定制化.md"
-        ]
-      },
-      "payment_link_mode": {
-        "name": "Payment Link Mode",
-        "complexity": "Very Low",
-        "pci_required": false,
-        "documents": [
-          "integration_process/链接支付/链接支付集成.md"
-        ]
-      },
-      "auth_capture_mode": {
-        "name": "Auth-Capture Mode",
-        "complexity": "Medium",
-        "pci_required": false,
-        "documents": [
-          "integration_process/Auth-Capture/前置组件支付集成.md",
-          "integration_process/Auth-Capture/收银台支付集成.md",
-          "integration_process/Auth-Capture/纯API支付集成.md"
-        ]
-      },
-      "tokenization_mode": {
-        "name": "Tokenization Mode",
-        "complexity": "Medium",
-        "pci_required": false,
-        "documents": [
-          "integration_process/Tokenization/Tokenization-前置组件支付集成.md",
-          "integration_process/Tokenization/Tokenization-收银台支付集成.md",
-          "integration_process/Tokenization/Tokenization-纯API支付集成.md"
-        ]
-      }
-    },
-    "supporting_documents": {
-      "overview": [
-        "integration_process/集成指引.md"
-      ],
-      "payment_result_integration": [
-        "integration_process/支付结果集成/获取支付结果集成.md"
-      ],
-      "refund_integration": [
-        "integration_process/退款集成/退款集成.md"
-      ],
-      "dispute_handling": [
-        "integration_process/争议/争议介绍.md",
-        "integration_process/争议/争议查询.md",
-        "integration_process/争议/争议异步通知.md",
-        "integration_process/争议/调单回复.md",
-        "integration_process/争议/案件状态.md"
-      ],
-      "isv_integration": [
-        "integration_process/ISV服务商接入/ISV服务商接入.md"
-      ],
-      "risk_management": [
-        "integration_process/业务风控管理/风控上送信息.md",
-        "integration_process/业务风控管理/风控限额表.md"
-      ],
-      "testing": [
-        "integration_process/集成测试/发起测试.md",
-        "integration_process/集成测试/发起验收.md"
-      ],
-      "developer_tools": [
-        "integration_process/开发者工具/交易状态和错误码.md",
-        "integration_process/开发者工具/发卡行错误码.md"
-      ]
-    }
-  },
-  "tool_3_api_documentation_search": {
-    "name": "API Documentation Search",
-    "description": "Semantic search using embeddings across all API specifications, samples, and endpoint documentation. Finds detailed API parameters, request/response formats, error codes, and code examples.",
-    "search_method": "embedding_based_semantic_search",
-    "document_sources": {
-      "api_specifications": "api-docs/**/*.md",
-      "api_samples": "api-samples/**/*.md"
-    },
-    "search_strategy": "semantic_search_with_context"
-  },
-  "tool_4_integration_guide_search": {
-    "name": "Integration Guide Search",
-    "description": "Semantic search using embeddings across all integration guides, workflows, payment method specifications, and product documentation. Finds step-by-step integration processes, payment method details, and implementation guides.",
-    "search_method": "embedding_based_semantic_search",
-    "document_sources": {
-      "integration_processes": "integration_process/**/*.md",
-      "payermax_documentation": "payermax_doc/**/*.md"
-    },
-    "payermax_doc_categories": {
-      "developer_guides": {
-        "description": "Developer configuration and setup guides",
-        "documents": [
-          "payermax_doc/开发者指南/公钥和私钥配置.md",
-          "payermax_doc/开发者指南/接口说明.md",
-          "payermax_doc/开发者指南/配置与签名.md"
-        ]
-      },
-      "integration_modes": {
-        "description": "Integration mode overview and detailed introductions",
-        "documents": [
-          "payermax_doc/全球支付/全球收单/集成模式/集成模式概览.md",
-          "payermax_doc/全球支付/全球收单/集成模式/集成模式详细介绍/前置组件介绍.md",
-          "payermax_doc/全球支付/全球收单/集成模式/集成模式详细介绍/收银台模式介绍.md",
-          "payermax_doc/全球支付/全球收单/集成模式/集成模式详细介绍/纯API模式介绍.md",
-          "payermax_doc/全球支付/全球收单/集成模式/集成模式详细介绍/链接支付介绍.md"
-        ]
-      },
-      "payment_methods": {
-        "description": "Payment method list and descriptions",
-        "documents": [
-          "payermax_doc/全球支付/全球收单/支付方式列表/支付方式-卡支付.md",
-          "payermax_doc/全球支付/全球收单/支付方式列表/支付方式-订阅代扣.md",
-          "payermax_doc/全球支付/全球收单/支付方式列表/支付方式-账单支付.md"
-        ]
-      },
-      "card_payment_integration": {
-        "description": "Card payment integration guides",
-        "documents": [
-          "payermax_doc/全球支付/全球收单/收单产品集成/收单基础产品/CARD/卡支付-前置组件集成.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/收单基础产品/CARD/卡支付-收银台模式集成.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/收单基础产品/CARD/卡支付-纯API模式集成.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/收单基础产品/CARD/卡支付-链接支付模式集成.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/收单基础产品/CARD/3DS认证.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/收单基础产品/CARD/PCI-DSS合规指南.md"
-        ]
-      },
-      "applepay_integration": {
-        "description": "Apple Pay integration guides",
-        "documents": [
-          "payermax_doc/全球支付/全球收单/收单产品集成/收单基础产品/APPLEPAY/ApplePay-前置组件集成.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/收单基础产品/APPLEPAY/ApplePay-收银台模式集成.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/收单基础产品/APPLEPAY/ApplePay-纯API模式集成.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/收单基础产品/APPLEPAY/ApplePay-链接支付模式集成.md"
-        ]
-      },
-      "googlepay_integration": {
-        "description": "Google Pay integration guides",
-        "documents": [
-          "payermax_doc/全球支付/全球收单/收单产品集成/收单基础产品/GOOGLEPAY/GooglePay-前置组件集成.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/收单基础产品/GOOGLEPAY/GooglePay-收银台模式集成.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/收单基础产品/GOOGLEPAY/GooglePay-纯API模式集成.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/收单基础产品/GOOGLEPAY/GooglePay-链接支付模式集成.md"
-        ]
-      },
-      "apm_integration": {
-        "description": "Alternative Payment Methods integration",
-        "documents": [
-          "payermax_doc/全球支付/全球收单/收单产品集成/收单基础产品/APM/APM支付方式集成.md"
-        ]
-      },
-      "subscription_payermax_managed": {
-        "description": "PayerMax managed subscription plans",
-        "documents": [
-          "payermax_doc/全球支付/全球收单/收单产品集成/订阅代扣/PayerMax管理订阅计划/PayerMax管理订阅计划.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/订阅代扣/PayerMax管理订阅计划/CARD/Card周期性订阅集成-PayerMax管理订阅计划.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/订阅代扣/PayerMax管理订阅计划/APPLEPAY/ApplePay周期性订阅集成-PayerMax管理订阅计划.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/订阅代扣/PayerMax管理订阅计划/GOOGLEPAY/GooglePay周期性订阅集成-PayerMax管理订阅计划.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/订阅代扣/PayerMax管理订阅计划/APM/APM周期性订阅集成-PayerMax管理订阅计划.md"
-        ]
-      },
-      "subscription_merchant_managed": {
-        "description": "Merchant managed subscription plans",
-        "documents": [
-          "payermax_doc/全球支付/全球收单/收单产品集成/订阅代扣/商户管理订阅计划/商户管理订阅计划.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/订阅代扣/商户管理订阅计划/CARD/Card周期性订阅集成-商户管理订阅计划.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/订阅代扣/商户管理订阅计划/APPLEPAY/ApplePay周期性订阅集成-商户管理订阅计划.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/订阅代扣/商户管理订阅计划/GOOGLEPAY/GooglePay周期性订阅集成-商户管理订阅计划.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/订阅代扣/商户管理订阅计划/APM/APM周期性订阅集成-商户管理订阅计划.md"
-        ]
-      },
-      "non_periodic_deduction": {
-        "description": "Non-periodic deduction integration",
-        "documents": [
-          "payermax_doc/全球支付/全球收单/收单产品集成/订阅代扣/非周期性代扣/非周期性代扣.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/订阅代扣/非周期性代扣/CARD/Card-非周期性代扣集成.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/订阅代扣/非周期性代扣/APPLEPAY/ApplePay-非周期性代扣集成.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/订阅代扣/非周期性代扣/GOOGLEPAY/GooglePay-非周期性代扣集成.md",
-          "payermax_doc/全球支付/全球收单/收单产品集成/订阅代扣/非周期性代扣/APM/APM-非周期性代扣集成.md"
-        ]
-      },
-      "bill_payment": {
-        "description": "Bill payment integration",
-        "documents": [
-          "payermax_doc/全球支付/全球收单/收单产品集成/账单支付/账单支付集成.md"
-        ]
-      }
-    },
-    "search_strategy": "semantic_search_with_context"
-  }
+  "tool_2_integration_assistant": {},
+  "tool_3_api_documentation_search": {},
+  "tool_4_integration_guide_search": {}
 }

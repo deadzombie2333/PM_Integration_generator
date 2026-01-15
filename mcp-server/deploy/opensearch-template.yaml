@@ -90,31 +90,22 @@ Resources:
                 {
                   "ResourceType": "collection",
                   "Resource": ["collection/${CollectionName}"],
-                  "Permission": [
-                    "aoss:CreateCollectionItems",
-                    "aoss:UpdateCollectionItems",
-                    "aoss:DescribeCollectionItems"
-                  ]
+                  "Permission": ["aoss:*"]
                 },
                 {
                   "ResourceType": "index",
-                  "Resource": ["index/${CollectionName}/*"],
-                  "Permission": [
-                    "aoss:CreateIndex",
-                    "aoss:DeleteIndex",
-                    "aoss:UpdateIndex",
-                    "aoss:DescribeIndex",
-                    "aoss:ReadDocument",
-                    "aoss:WriteDocument"
-                  ]
+                  "Resource": [
+                    "index/${CollectionName}/*",
+                    "index/payermax-api-docs/*",
+                    "index/payermax-integration-guides/*"
+                  ],
+                  "Permission": ["aoss:*"]
                 }
               ],
-              "Principal": ${PrincipalList}
+              "Principal": ["${LambdaExecutionRoleArn}"]
             }
           ]
-        - PrincipalList: !Sub
-            - '["${LambdaExecutionRoleArn}","${JoinedAdditionalPrincipals}"]'
-            - JoinedAdditionalPrincipals: !Join ['","', !Ref AdditionalPrincipalArns]
+        - LambdaExecutionRoleArn: !Ref LambdaExecutionRoleArn
 
   # OpenSearch Serverless Collection
   OpenSearchCollection:

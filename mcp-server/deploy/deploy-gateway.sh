@@ -7,7 +7,7 @@ set -e
 
 # Configuration
 STACK_NAME="payermax-mcp-gateway-stack"
-TEMPLATE_FILE="deploy/gateway-template.yaml"
+TEMPLATE_FILE="mcp-server/deploy/gateway-template.yaml"
 REGION=${AWS_REGION:-us-west-2}
 GATEWAY_NAME="payermax-mcp-gateway"
 DOMAIN_PREFIX="payermax-mcp-auth"

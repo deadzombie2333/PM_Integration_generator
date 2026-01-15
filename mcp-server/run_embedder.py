@@ -7,10 +7,9 @@ import sys
 from pathlib import Path
 
 # Set environment variables for us-west-2 OpenSearch
-os.environ['OPENSEARCH_ENDPOINT'] = 'dy9xqlp8blzu7vpd4d30.us-west-2.aoss.amazonaws.com'
+os.environ['OPENSEARCH_ENDPOINT'] = 'rcrvm3t2yinymdemy9lb.us-west-2.aoss.amazonaws.com'
 os.environ['AWS_REGION'] = 'us-west-2'
-os.environ['TOOL_3_INDEX'] = 'payermax-api-docs'
-os.environ['TOOL_4_INDEX'] = 'payermax-integration-guides'
+os.environ['OPENSEARCH_INDEX'] = 'payermax-docs'
 
 # Add current directory to path
 sys.path.insert(0, str(Path(__file__).parent))

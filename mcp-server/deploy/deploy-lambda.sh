@@ -110,7 +110,7 @@ if [ -n "$OPENSEARCH_INDEX" ]; then
 fi
 
 aws cloudformation deploy \
-    --template-file deploy/lambda-template.yaml \
+    --template-file mcp-server/deploy/lambda-template.yaml \
     --stack-name $STACK_NAME \
     --parameter-overrides $PARAMS \
     --capabilities CAPABILITY_NAMED_IAM \

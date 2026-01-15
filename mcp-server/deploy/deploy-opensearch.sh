@@ -39,7 +39,7 @@ echo "Lambda Execution Role ARN: $LAMBDA_ROLE_ARN"
 echo -e "\n${YELLOW}Deploying OpenSearch Serverless CloudFormation stack...${NC}"
 
 aws cloudformation deploy \
-    --template-file deploy/opensearch-template.yaml \
+    --template-file mcp-server/deploy/opensearch-template.yaml \
     --stack-name $STACK_NAME \
     --parameter-overrides \
         VpcName=$VPC_NAME \

@@ -228,6 +228,18 @@ Resources:
         - Key: Name
           Value: !Sub '${VpcName}-sg'
 
+  # Self-referencing security group rule for OpenSearch Serverless
+  # This allows the security group to reference itself for internal communication
+  VPCEndpointSecurityGroupSelfIngress:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref VPCEndpointSecurityGroup
+      IpProtocol: tcp
+      FromPort: 443
+      ToPort: 443
+      SourceSecurityGroupId: !Ref VPCEndpointSecurityGroup
+      Description: 'Self-referencing rule for OpenSearch Serverless VPC endpoint'
+
   # S3 Gateway VPC Endpoint
   S3GatewayEndpoint:
     Type: AWS::EC2::VPCEndpoint

@@ -48,3 +48,4 @@ htmlcov/
 test.txt
 /mcp-server/lambda-package
 *.json
+/mcp-server/deploy/lambda-package

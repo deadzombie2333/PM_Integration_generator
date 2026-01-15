@@ -12,7 +12,8 @@ NC='\033[0m'
 
 REGION="us-west-2"
 FUNCTION_NAME="payermax-mcp-gateway-lambda"
-PACKAGE_DIR="lambda-package"
+PACKAGE_DIR="mcp-server/deploy/lambda-package"
+SOURCE_DIR="mcp-server"
 
 echo -e "${GREEN}Starting Lambda package creation...${NC}"
 
@@ -28,13 +29,17 @@ mkdir -p $PACKAGE_DIR
 
 # Copy MCP server files
 echo "Copying MCP server files..."
-cp api_docs_server.py $PACKAGE_DIR/
-cp tool_config.json $PACKAGE_DIR/
-cp -r tools $PACKAGE_DIR/
-cp -r api-docs $PACKAGE_DIR/
-cp -r api-samples $PACKAGE_DIR/
-cp -r integration_process $PACKAGE_DIR/
-cp -r payermax_doc $PACKAGE_DIR/
+cp $SOURCE_DIR/api_docs_server.py $PACKAGE_DIR/
+if [ -f "$SOURCE_DIR/tool_config.json" ]; then
+    cp $SOURCE_DIR/tool_config.json $PACKAGE_DIR/
+else
+    echo "{}" > $PACKAGE_DIR/tool_config.json
+fi
+cp -r $SOURCE_DIR/tools $PACKAGE_DIR/
+cp -r $SOURCE_DIR/api-docs $PACKAGE_DIR/
+cp -r $SOURCE_DIR/api-samples $PACKAGE_DIR/
+cp -r $SOURCE_DIR/integration_process $PACKAGE_DIR/
+cp -r $SOURCE_DIR/payermax_doc $PACKAGE_DIR/
 
 # Install dependencies
 echo "Installing Python dependencies for Lambda (Amazon Linux)..."
@@ -128,15 +133,26 @@ def handler(event, context):
             
         elif 'query' in arguments:
             # Tool 3 or 4: search tools
-            # Default to API documentation search
-            print("Calling APIDocumentationSearch.search")
-            if api_documentation_search:
-                result = api_documentation_search.search(**arguments)
+            # Check if this is for integration guides (Tool 4)
+            if arguments.get('doc_type_filter') == 'integration_guide' or arguments.get('search_integration_guides'):
+                print("Calling IntegrationGuideSearch.search")
+                if integration_guide_search:
+                    result = integration_guide_search.search(**arguments)
+                else:
+                    result = {
+                        'error': 'OpenSearch not configured',
+                        'message': 'OPENSEARCH_ENDPOINT environment variable not set'
+                    }
             else:
-                result = {
-                    'error': 'OpenSearch not configured',
-                    'message': 'OPENSEARCH_ENDPOINT environment variable not set'
-                }
+                # Default to API documentation search (Tool 3)
+                print("Calling APIDocumentationSearch.search")
+                if api_documentation_search:
+                    result = api_documentation_search.search(**arguments)
+                else:
+                    result = {
+                        'error': 'OpenSearch not configured',
+                        'message': 'OPENSEARCH_ENDPOINT environment variable not set'
+                    }
         else:
             error_msg = f'Cannot determine tool from arguments: {list(arguments.keys())}'
             print(error_msg)
@@ -163,8 +179,8 @@ EOF
 # Create deployment package
 echo "Creating deployment package..."
 cd $PACKAGE_DIR
-zip -r ../lambda-deployment.zip . -q
-cd ..
+zip -r ../../lambda-deployment.zip . -q
+cd ../../
 
 echo -e "${GREEN}Package created: lambda-deployment.zip${NC}"
 
