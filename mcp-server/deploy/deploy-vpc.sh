@@ -4,7 +4,7 @@
 # This script deploys the VPC infrastructure using CloudFormation
 
 STACK_NAME="payermax-mcp-vpc-stack"
-TEMPLATE_FILE="mcp-server/deploy/vpc-network-cloudformation.yaml"
+TEMPLATE_FILE="vpc-network-cloudformation.yaml"
 REGION=${AWS_REGION:-us-west-2}
 VPC_NAME="payermax-mcp"
 

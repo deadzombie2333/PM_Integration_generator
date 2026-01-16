@@ -12,8 +12,8 @@ NC='\033[0m'
 
 REGION="us-west-2"
 FUNCTION_NAME="payermax-mcp-gateway-lambda"
-PACKAGE_DIR="mcp-server/deploy/lambda-package"
-SOURCE_DIR="mcp-server"
+PACKAGE_DIR="lambda-package"
+SOURCE_DIR=".."
 
 echo -e "${GREEN}Starting Lambda package creation...${NC}"
 
@@ -233,6 +233,18 @@ aws lambda update-function-configuration \
     --function-name $FUNCTION_NAME \
     --handler lambda_handler.handler \
     --region $REGION
+
+# Update environment variables to include Tool 3 and Tool 4 indices
+echo "Updating Lambda environment variables..."
+OPENSEARCH_ENDPOINT=$(jq -r '.opensearch_endpoint // ""' payermax-mcp-lambda-config.json)
+if [ -n "$OPENSEARCH_ENDPOINT" ]; then
+    aws lambda update-function-configuration \
+        --function-name $FUNCTION_NAME \
+        --region $REGION \
+        --environment "Variables={OPENSEARCH_ENDPOINT=$OPENSEARCH_ENDPOINT,REGION=$REGION,TOOL_3_INDEX=payermax-api-docs,TOOL_4_INDEX=payermax-integration-guides}" \
+        > /dev/null
+    echo "✓ Environment variables updated with OpenSearch configuration"
+fi
 
 echo -e "\n${GREEN}✅ Lambda deployment completed!${NC}"
 echo ""

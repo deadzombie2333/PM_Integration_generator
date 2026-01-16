@@ -92,11 +92,14 @@ Resources:
       MemorySize: 2048
       Environment:
         Variables:
+          REGION: !Ref AWS::Region
           CUSTOM_REGION: !Ref AWS::Region
           COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
           COGNITO_CLIENT_ID: !Ref CognitoClientId
           OPENSEARCH_ENDPOINT: !Ref OpenSearchEndpoint
           OPENSEARCH_INDEX: !Ref OpenSearchIndexName
+          TOOL_3_INDEX: 'payermax-api-docs'
+          TOOL_4_INDEX: 'payermax-integration-guides'
       VpcConfig:
         SecurityGroupIds:
           - Fn::ImportValue: !Sub '${VpcName}-SecurityGroup-ID'

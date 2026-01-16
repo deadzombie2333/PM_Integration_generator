@@ -71,7 +71,7 @@ fi
 echo -e "\n${YELLOW}Deploying Gateway Target CloudFormation stack...${NC}"
 
 aws cloudformation deploy \
-    --template-file mcp-server/deploy/gateway-target-template.yaml \
+    --template-file gateway-target-template.yaml \
     --stack-name $TARGET_STACK_NAME \
     --parameter-overrides \
         GatewayName=$GATEWAY_NAME \

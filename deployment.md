@@ -221,28 +221,100 @@ Package the MCP server code and deploy to Lambda.
 
 ### Step 6: Generate Document Embeddings
 
-Index all documentation into OpenSearch for semantic search.
+Index all documentation into OpenSearch for semantic search. Since OpenSearch is in VPC-only mode, we need to temporarily allow public access.
+
+**Step 6a: Temporarily Enable Public Access**
 
 ```bash
 cd mcp-server
 
-# Set environment variables
-export OPENSEARCH_ENDPOINT="<your-collection-endpoint>"
-export OPENSEARCH_INDEX="payermax-docs"
-export AWS_REGION="us-west-2"
+# Get current network policy version
+POLICY_VERSION=$(aws opensearchserverless get-security-policy \
+  --name payermax-docs-network \
+  --type network \
+  --region us-west-2 \
+  --query 'securityPolicyDetail.policyVersion' \
+  --output text)
+
+# Update to allow public access temporarily
+aws opensearchserverless update-security-policy \
+  --name payermax-docs-network \
+  --type network \
+  --policy-version $POLICY_VERSION \
+  --region us-west-2 \
+  --policy '[{"Rules":[{"ResourceType":"collection","Resource":["collection/payermax-docs"]},{"ResourceType":"dashboard","Resource":["collection/payermax-docs"]}],"AllowFromPublic":true}]'
+```
+
+**Step 6b: Update Data Access Policy**
+
+```bash
+# Get current IAM user ARN
+USER_ARN=$(aws sts get-caller-identity --query 'Arn' --output text)
+
+# Get Lambda role ARN from config
+LAMBDA_ROLE=$(jq -r '.lambda_execution_role_arn' deploy/payermax-mcp-lambda-config.json)
+
+# Get current data access policy version
+POLICY_VERSION=$(aws opensearchserverless get-access-policy \
+  --name payermax-docs-access \
+  --type data \
+  --region us-west-2 \
+  --query 'accessPolicyDetail.policyVersion' \
+  --output text)
+
+# Update to include current user with full permissions
+aws opensearchserverless update-access-policy \
+  --name payermax-docs-access \
+  --type data \
+  --policy-version $POLICY_VERSION \
+  --region us-west-2 \
+  --policy "[{\"Rules\":[{\"ResourceType\":\"collection\",\"Resource\":[\"collection/payermax-docs\"],\"Permission\":[\"aoss:*\"]},{\"ResourceType\":\"index\",\"Resource\":[\"index/payermax-docs/*\",\"index/payermax-api-docs/*\",\"index/payermax-integration-guides/*\"],\"Permission\":[\"aoss:*\"]}],\"Principal\":[\"$LAMBDA_ROLE\",\"$USER_ARN\"]}]"
+```
+
+**Step 6c: Run Embedder**
+
+```bash
+# Wait 2-3 minutes for policy changes to propagate
+sleep 180
 
 # Run embedder
 python run_embedder.py
 ```
 
+**Step 6d: Restore VPC-Only Access**
+
+```bash
+# Get VPC endpoint ID from network config
+VPCE_ID=$(jq -r '.vpc_endpoints.opensearch_serverless' deploy/network-config.json)
+
+# Get current network policy version
+POLICY_VERSION=$(aws opensearchserverless get-security-policy \
+  --name payermax-docs-network \
+  --type network \
+  --region us-west-2 \
+  --query 'securityPolicyDetail.policyVersion' \
+  --output text)
+
+# Restore VPC-only access
+aws opensearchserverless update-security-policy \
+  --name payermax-docs-network \
+  --type network \
+  --policy-version $POLICY_VERSION \
+  --region us-west-2 \
+  --policy "[{\"Rules\":[{\"ResourceType\":\"collection\",\"Resource\":[\"collection/payermax-docs\"]},{\"ResourceType\":\"dashboard\",\"Resource\":[\"collection/payermax-docs\"]}],\"AllowFromPublic\":false,\"SourceVPCEs\":[\"$VPCE_ID\"]}]"
+```
+
 **What This Does:**
+- Temporarily allows public access to OpenSearch
+- Adds current user to data access policy
 - Reads all API documentation files
 - Generates embeddings using Bedrock Titan
-- Creates OpenSearch index with vector mappings
+- Creates OpenSearch indices with vector mappings
 - Indexes documents with embeddings
+- Restores VPC-only access for security
 - Enables semantic search for Tools 3 & 4
 
-**Estimated Time:** 30-60 minutes (depending on document count)
+**Estimated Time:** 35-65 minutes (5 min setup + 30-60 min indexing)
 
 **Cost:** Bedrock Titan Embeddings
 - $0.0001 per 1K input tokens
@@ -500,6 +572,86 @@ aws opensearchserverless update-security-policy \
 ```
 
 ### Issue: Lambda Cannot Access OpenSearch
+
+**Symptoms:** Lambda logs show connection timeout or access denied (401 error)
+
+**Root Causes:**
+1. Missing IAM permission `aoss:APIAccessAll` for Lambda execution role
+2. Incorrect credential handling in OpenSearch client (frozen credentials vs auto-refreshing)
+3. Missing environment variables `TOOL_3_INDEX` and `TOOL_4_INDEX`
+
+**Solutions:**
+
+**1. Verify IAM Permissions:**
+The Lambda execution role needs `aoss:APIAccessAll` permission. This is now included in the CloudFormation template:
+
+```yaml
+- Effect: Allow
+  Action:
+    - aoss:APIAccessAll
+  Resource: !Sub 'arn:aws:aoss:${AWS::Region}:${AWS::AccountId}:collection/*'
+```
+
+**2. Credential Handling Fix:**
+The OpenSearch client must use `botocore.session.Session()` instead of `boto3.Session()` for auto-refreshing credentials:
+
+```python
+# CORRECT - Auto-refreshing credentials
+from botocore.session import Session
+session = Session()
+credentials = session.get_credentials()
+auth = AWSV4SignerAuth(credentials, self.aws_region, 'aoss')
+
+# WRONG - Frozen credentials (will fail in Lambda)
+credentials = boto3.Session().get_credentials()
+auth = AWSV4SignerAuth(credentials, self.aws_region, 'aoss')
+```
+
+This fix is already applied in `mcp-server/tools/api_documentation_search.py` and `mcp-server/tools/integration_guide_search.py`.
+
+**3. Environment Variables:**
+The Lambda needs these environment variables:
+- `REGION`: AWS region (e.g., `us-west-2`)
+- `OPENSEARCH_ENDPOINT`: Collection endpoint (e.g., `xxx.us-west-2.aoss.amazonaws.com`)
+- `TOOL_3_INDEX`: Index for API docs (default: `payermax-api-docs`)
+- `TOOL_4_INDEX`: Index for integration guides (default: `payermax-integration-guides`)
+
+These are now automatically set by the deployment scripts.
+
+**4. VPC Endpoint Service:**
+The VPC endpoint for OpenSearch Serverless uses a VPC Endpoint Service with Private DNS enabled. This automatically routes `*.aoss.amazonaws.com` traffic through the private network without code changes.
+
+Check the VPC endpoint:
+```bash
+aws ec2 describe-vpc-endpoints --vpc-endpoint-ids <vpce-id> --region us-west-2
+```
+
+Verify Private DNS is enabled and the service name includes `aoss`.
+
+**Verification Steps:**
+```bash
+# Check Lambda IAM policy
+aws iam get-role-policy \
+  --role-name payermax-mcp-gateway-lambda-execution-role \
+  --policy-name payermax-mcp-gateway-lambda-policy \
+  --region us-west-2
+
+# Check Lambda environment variables
+aws lambda get-function-configuration \
+  --function-name payermax-mcp-gateway-lambda \
+  --region us-west-2 \
+  --query 'Environment.Variables'
+
+# Test Tool 3
+aws lambda invoke \
+  --function-name payermax-mcp-gateway-lambda \
+  --region us-west-2 \
+  --payload '{"query": "How to create a payment?", "top_k": 3}' \
+  --cli-binary-format raw-in-base64-out \
+  /tmp/test.json && cat /tmp/test.json
+```
+
+### Issue: Lambda Cannot Access OpenSearch (Legacy)
 
 **Symptoms:** Lambda logs show connection timeout or access denied (401 error)
 

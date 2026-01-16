@@ -54,8 +54,13 @@ class APIDocumentationSearch:
         
         # Initialize OpenSearch client
         try:
-            # Use boto3 default session for auto-refreshing credentials
-            credentials = boto3.Session().get_credentials()
+            # In Lambda, use default credentials (execution role)
+            # boto3.Session().get_credentials() returns frozen credentials
+            # We need to use the default credential chain which auto-refreshes
+            from botocore.session import Session
+            session = Session()
+            credentials = session.get_credentials()
+            
             auth = AWSV4SignerAuth(credentials, self.aws_region, 'aoss')
             
             self.opensearch_client = OpenSearch(
