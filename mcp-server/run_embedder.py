@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 # Set environment variables for us-west-2 OpenSearch
-os.environ['OPENSEARCH_ENDPOINT'] = 'o8b7uikee9k4uzzcm490.us-west-2.aoss.amazonaws.com'
+os.environ['OPENSEARCH_ENDPOINT'] = 'mbslm3lp3fixpq4fe1ue.us-west-2.aoss.amazonaws.com'
 os.environ['AWS_REGION'] = 'us-west-2'
 os.environ['OPENSEARCH_INDEX'] = 'payermax-docs'
 

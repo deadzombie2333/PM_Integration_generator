@@ -17,7 +17,7 @@ from urllib.parse import urlencode
 from pathlib import Path
 
 # Load configuration
-config_file = Path('payermax-mcp-complete-config.json')
+config_file = Path('deploy/payermax-mcp-complete-config.json')
 if not config_file.exists():
     print("❌ Error: payermax-mcp-complete-config.json not found")
     print("")

@@ -86,14 +86,13 @@ Resources:
       FunctionName: !Sub '${GatewayName}-lambda'
       PackageType: Zip
       Runtime: python3.11
-      Handler: index.handler
+      Handler: lambda_handler.handler
       Role: !GetAtt LambdaExecutionRole.Arn
       Timeout: 300
       MemorySize: 2048
       Environment:
         Variables:
           REGION: !Ref AWS::Region
-          CUSTOM_REGION: !Ref AWS::Region
           COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
           COGNITO_CLIENT_ID: !Ref CognitoClientId
           OPENSEARCH_ENDPOINT: !Ref OpenSearchEndpoint

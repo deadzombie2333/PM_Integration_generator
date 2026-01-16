@@ -12,7 +12,7 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-CONFIG_FILE="mcp-server/payermax-mcp-complete-config.json"
+CONFIG_FILE="mcp-server/deploy/payermax-mcp-complete-config.json"
 
 echo -e "${BLUE}=== PayerMax MCP Gateway Credentials ===${NC}\n"
 

@@ -236,7 +236,7 @@ aws lambda update-function-configuration \
 
 # Update environment variables to include Tool 3 and Tool 4 indices
 echo "Updating Lambda environment variables..."
-OPENSEARCH_ENDPOINT=$(jq -r '.opensearch_endpoint // ""' payermax-mcp-lambda-config.json)
+OPENSEARCH_ENDPOINT=$(jq -r '.collection_host // ""' payermax-mcp-opensearch-config.json)
 if [ -n "$OPENSEARCH_ENDPOINT" ]; then
     aws lambda update-function-configuration \
         --function-name $FUNCTION_NAME \
